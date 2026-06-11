@@ -1,0 +1,177 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FileDown, Loader2, CheckCircle } from "lucide-react";
+
+interface ProgressExportProps {
+  history: any[];
+  userName?: string;
+}
+
+export default function ProgressExportButton({ history, userName = "Patient" }: ProgressExportProps) {
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const exportPDF = async () => {
+    setLoading(true);
+    try {
+      const { jsPDF } = await import("jspdf");
+      const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+
+      const pageW = doc.internal.pageSize.getWidth();
+      const pageH = doc.internal.pageSize.getHeight();
+      const margin = 20;
+
+      // --- HEADER ---
+      doc.setFillColor(16, 185, 129); // emerald-500
+      doc.rect(0, 0, pageW, 40, "F");
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text("PREDNIX", margin, 18);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text("Personalized Metabolic Wellness Report", margin, 27);
+
+      const today = new Date().toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" });
+      doc.text(`Generated: ${today}`, pageW - margin - 60, 27);
+
+      // --- PATIENT INFO ---
+      doc.setTextColor(30, 30, 30);
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text(`Patient: ${userName}`, margin, 55);
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Report Period: Last ${history.length} days`, margin, 62);
+
+      // --- DIVIDER ---
+      doc.setDrawColor(200, 200, 200);
+      doc.line(margin, 68, pageW - margin, 68);
+
+      // --- BLOOD SUGAR TABLE ---
+      let y = 78;
+      const bsData = history.filter(h => h.blood_sugar).slice(0, 15);
+
+      if (bsData.length > 0) {
+        doc.setFontSize(13);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(30, 30, 30);
+        doc.text("Blood Glucose Log (mg/dL)", margin, y);
+        y += 8;
+
+        // Table headers
+        doc.setFillColor(240, 253, 244); // emerald-50
+        doc.rect(margin, y, pageW - margin * 2, 8, "F");
+        doc.setFontSize(9);
+        doc.setTextColor(14, 159, 110);
+        doc.setFont("helvetica", "bold");
+        doc.text("Date", margin + 3, y + 5.5);
+        doc.text("Glucose (mg/dL)", margin + 55, y + 5.5);
+        doc.text("Status", margin + 110, y + 5.5);
+        y += 8;
+
+        // Table rows
+        bsData.forEach((row, i) => {
+          if (i % 2 === 0) {
+            doc.setFillColor(249, 250, 251);
+            doc.rect(margin, y, pageW - margin * 2, 7, "F");
+          }
+          const status = row.blood_sugar < 99 ? "Normal" : row.blood_sugar < 126 ? "Pre-Diabetic" : "High";
+          const statusColor = row.blood_sugar < 99 ? [22, 163, 74] : row.blood_sugar < 126 ? [217, 119, 6] : [220, 38, 38];
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(50, 50, 50);
+          doc.setFontSize(9);
+          const dateStr = new Date(row.date).toLocaleDateString("en-IN");
+          doc.text(dateStr, margin + 3, y + 5);
+          doc.text(row.blood_sugar.toString(), margin + 55, y + 5);
+          doc.setTextColor(statusColor[0], statusColor[1], statusColor[2]);
+          doc.text(status, margin + 110, y + 5);
+          doc.setTextColor(50, 50, 50);
+          y += 7;
+        });
+        y += 10;
+      }
+
+      // --- WEIGHT TABLE ---
+      const wData = history.filter(h => h.weight).slice(0, 10);
+      if (wData.length > 0) {
+        if (y > pageH - 60) { doc.addPage(); y = margin; }
+        doc.setFontSize(13);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(30, 30, 30);
+        doc.text("Weight Log", margin, y);
+        y += 8;
+
+        doc.setFillColor(239, 246, 255);
+        doc.rect(margin, y, pageW - margin * 2, 8, "F");
+        doc.setFontSize(9);
+        doc.setTextColor(37, 99, 235);
+        doc.setFont("helvetica", "bold");
+        doc.text("Date", margin + 3, y + 5.5);
+        doc.text("Weight (lbs)", margin + 55, y + 5.5);
+        y += 8;
+
+        wData.forEach((row, i) => {
+          if (i % 2 === 0) { doc.setFillColor(249, 250, 251); doc.rect(margin, y, pageW - margin * 2, 7, "F"); }
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(50, 50, 50);
+          doc.setFontSize(9);
+          doc.text(new Date(row.date).toLocaleDateString("en-IN"), margin + 3, y + 5);
+          doc.text(row.weight.toString(), margin + 55, y + 5);
+          y += 7;
+        });
+        y += 10;
+      }
+
+      // --- DISCLAIMER ---
+      if (y > pageH - 30) { doc.addPage(); y = margin; }
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "italic");
+      doc.setTextColor(150, 150, 150);
+      doc.text("This report is generated by Prednix and is intended for informational purposes only.", margin, pageH - 15);
+      doc.text("Please consult a licensed medical professional for clinical diagnosis or treatment.", margin, pageH - 10);
+
+      doc.save(`Prednix_Report_${new Date().toLocaleDateString("en-IN").replace(/\//g, "-")}.pdf`);
+      setDone(true);
+      setTimeout(() => setDone(false), 3000);
+    } catch (err) {
+      console.error(err);
+      alert("Error generating PDF. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={exportPDF}
+      disabled={loading || history.length === 0}
+      className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-sm
+        ${done
+          ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-400"
+          : "bg-gray-900 hover:bg-black text-white border border-white/10"
+        }`}
+    >
+      <AnimatePresence mode="wait">
+        {done ? (
+          <motion.span key="done" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center gap-2">
+            <CheckCircle size={16} /> Report Saved!
+          </motion.span>
+        ) : loading ? (
+          <motion.span key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
+            <Loader2 size={16} className="animate-spin" /> Generating...
+          </motion.span>
+        ) : (
+          <motion.span key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
+            <FileDown size={16} /> Export Doctor's Report
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </motion.button>
+  );
+}

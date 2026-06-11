@@ -1,0 +1,6 @@
+dbs:
+  - path: ./predinex.db
+    replicas:
+      # This points to an Amazon S3 Bucket (or Cloudflare R2 / DigitalOcean Spaces)
+      # You MUST set LITESTREAM_ACCESS_KEY_ID and LITESTREAM_SECRET_ACCESS_KEY inside your .env
+      - url: s3://predinex-db-backups/db
