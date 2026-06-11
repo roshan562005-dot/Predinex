@@ -104,6 +104,7 @@ export default function LandingPage() {
             <a href="#features" className="hover:text-emerald-400 transition-colors">Clinical Features</a>
             <a href="#how-it-works" className="hover:text-emerald-400 transition-colors">How It Works</a>
             <Link href="/founder" className="hover:text-emerald-400 transition-colors">Our Founder</Link>
+            <Link href="/blog" className="hover:text-emerald-400 transition-colors">Blog</Link>
           </div>
 
           <div className="flex items-center gap-4">
