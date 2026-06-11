@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Dumbbell, Clock, Flame, Activity, ChevronRight, PlayCircle, Pause, Play, Volume2, VolumeX, CheckCircle2, Sparkles, Target, Zap, HeartPulse } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { workoutLevels, WorkoutLevel, WorkoutDay, Exercise, workoutCategories, WorkoutCategory } from "./workoutData";
+import { getPremiumStatus } from "@/app/(app)/actions";
+import { PaywallOverlay } from "@/components/PaywallOverlay";
 
 const FITNESS_QUOTES = [
   "\"Push yourself — no one else will do it for you.\" — Unknown",
@@ -21,6 +23,8 @@ export default function WorkoutPage() {
   const [activeDay, setActiveDay] = useState<WorkoutDay | null>(null);
   const [activeCategory, setActiveCategory] = useState<WorkoutCategory | null>(null);
   const [completedDays, setCompletedDays] = useState<Record<string, number[]>>({});
+  const [isPremium, setIsPremium] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   // Player state
   const [workoutState, setWorkoutState] = useState<'ready' | 'active' | 'rest'>('ready');
@@ -33,6 +37,13 @@ export default function WorkoutPage() {
   useEffect(() => {
     const saved = localStorage.getItem('predinex_workout_progress');
     if (saved) setCompletedDays(JSON.parse(saved));
+
+    async function checkPremium() {
+      const premium = await getPremiumStatus();
+      setIsPremium(premium);
+      setLoading(false);
+    }
+    checkPremium();
   }, []);
 
   const markDayComplete = (levelId: string, dayNum: number) => {
@@ -141,6 +152,7 @@ export default function WorkoutPage() {
   if (!activeLevel && !activeCategory) {
     return (
        <div className="max-w-5xl mx-auto space-y-12 pb-20 md:pb-8 relative">
+        {!isPremium && !loading && <PaywallOverlay />}
         {/* Deep ambient background glows for Premium Glassmorphism */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-teal-500/10 dark:bg-teal-500/5 rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute top-96 left-0 w-[500px] h-[500px] bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
