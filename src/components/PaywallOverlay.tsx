@@ -67,7 +67,7 @@ export function PaywallOverlay() {
           const verifyData = await verifyRes.json();
           if (verifyData.success) {
             // Payment success! Refresh the page to remove the paywall
-            router.refresh();
+            window.location.reload();
           } else {
             alert("Payment verification failed. Please contact support.");
           }
