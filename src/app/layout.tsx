@@ -66,7 +66,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="google-site-verification" content="u8S_EIo85xLI3ED0iXil0IXiDuPh1XOoYDkXLtC2" />
+        <meta name="google-site-verification" content="u8S_Elo85xLl3ED0iXil0lXiDuPh1XOoYDkXLtC2uzs" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
