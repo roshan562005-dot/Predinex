@@ -52,6 +52,14 @@ export default function Dashboard() {
   const [selectedArticle, setSelectedArticle] = useState<any>(null);
   const [showNewsArchive, setShowNewsArchive] = useState(false);
   
+  // Logging Modal State
+  const [showLogModal, setShowLogModal] = useState(false);
+  const [activeLogType, setActiveLogType] = useState<'blood_sugar' | 'blood_pressure' | 'weight' | 'sleep_hours'>('blood_sugar');
+  const [logValue, setLogValue] = useState('');
+  
+  // Action Plan State (Local)
+  const [completedTasks, setCompletedTasks] = useState<number[]>([]);
+  
   // BMI Calculator State
   const [bmiHeight, setBmiHeight] = useState('');
   const [bmiWeight, setBmiWeight] = useState('');
@@ -160,6 +168,45 @@ export default function Dashboard() {
     }
   };
 
+  const openLogModal = (type: 'blood_sugar' | 'blood_pressure' | 'weight' | 'sleep_hours') => {
+    setActiveLogType(type);
+    setLogValue('');
+    setShowLogModal(true);
+  };
+
+  const handleLogSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const payload: any = {};
+      if (activeLogType === 'blood_pressure') {
+        payload[activeLogType] = logValue;
+      } else {
+        payload[activeLogType] = parseFloat(logValue) || 0;
+      }
+      await upsertHabits(payload);
+      
+      // Refresh local habits data
+      const h_res = await getHabitHistory(1);
+      setHabits(h_res?.[0] || null);
+      
+      setShowLogModal(false);
+    } catch (err) {
+      console.error("Failed to log data:", err);
+      alert("Failed to log. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleTask = (index: number) => {
+    if (completedTasks.includes(index)) {
+      setCompletedTasks(completedTasks.filter(i => i !== index));
+    } else {
+      setCompletedTasks([...completedTasks, index]);
+    }
+  };
+
   const handleClearHistory = async () => {
     if (confirm("Clear all habit history? This cannot be undone.")) {
       await clearHabitHistory();
@@ -265,16 +312,12 @@ export default function Dashboard() {
           <div className="flex justify-between items-start mb-6" style={{ transform: "translateZ(30px)" }}>
              <div className="p-4 bg-red-500/10 text-red-500 rounded-2xl shadow-lg shadow-red-500/5"><Droplets size={28} /></div>
              <div className="flex items-center gap-1.5">
-               {habits?.blood_sugar && (
-                 <button 
-                  onClick={() => handleReset('blood_sugar')} 
-                  className="p-2.5 bg-red-500/10 hover:bg-red-500/20 rounded-xl text-red-500 transition-all border border-red-500/20 shadow-sm" 
-                  title={t("reset")}
-                 >
-                   <RotateCcw size={16} />
-                 </button>
-               )}
-               <span className="text-[10px] font-black bg-red-500 text-white px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg shadow-red-500/20">Active</span>
+               <button 
+                 onClick={() => openLogModal('blood_sugar')} 
+                 className="text-[10px] font-black bg-red-500 text-white px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg shadow-red-500/20 hover:scale-105 transition-transform"
+               >
+                 Log Data
+               </button>
              </div>
           </div>
           <div style={{ transform: "translateZ(60px)" }}>
@@ -296,16 +339,12 @@ export default function Dashboard() {
           <div className="flex justify-between items-start mb-6" style={{ transform: "translateZ(30px)" }}>
              <div className="p-4 bg-blue-500/10 text-blue-500 rounded-2xl shadow-lg shadow-blue-500/5"><Activity size={28} /></div>
              <div className="flex items-center gap-1.5">
-               {habits?.blood_pressure && (
-                 <button 
-                  onClick={() => handleReset('blood_pressure')} 
-                  className="p-2.5 bg-blue-500/10 hover:bg-blue-500/20 rounded-xl text-blue-500 transition-all border border-blue-500/20 shadow-sm" 
-                  title={t("reset")}
-                 >
-                   <RotateCcw size={16} />
-                 </button>
-               )}
-               <span className="text-[10px] font-black bg-blue-500 text-white px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg shadow-blue-500/20">Sync</span>
+               <button 
+                 onClick={() => openLogModal('blood_pressure')} 
+                 className="text-[10px] font-black bg-blue-500 text-white px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:scale-105 transition-transform"
+               >
+                 Log Data
+               </button>
              </div>
           </div>
           <div style={{ transform: "translateZ(60px)" }}>
@@ -327,16 +366,12 @@ export default function Dashboard() {
           <div className="flex justify-between items-start mb-6" style={{ transform: "translateZ(30px)" }}>
              <div className="p-4 bg-teal-500/10 text-teal-500 rounded-2xl shadow-lg shadow-teal-500/5"><Monitor size={28} /></div>
              <div className="flex items-center gap-1.5">
-               {habits?.weight && (
-                 <button 
-                  onClick={() => handleReset('weight')} 
-                  className="p-2.5 bg-teal-500/10 hover:bg-teal-500/20 rounded-xl text-teal-500 transition-all border border-teal-500/20 shadow-sm" 
-                  title={t("reset")}
-                 >
-                   <RotateCcw size={16} />
-                 </button>
-               )}
-               <span className="text-[10px] font-black bg-teal-500 text-white px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg shadow-teal-500/20">Logged</span>
+               <button 
+                 onClick={() => openLogModal('weight')} 
+                 className="text-[10px] font-black bg-teal-500 text-white px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg shadow-teal-500/20 hover:scale-105 transition-transform"
+               >
+                 Log Data
+               </button>
              </div>
           </div>
           <div style={{ transform: "translateZ(60px)" }}>
@@ -358,16 +393,12 @@ export default function Dashboard() {
           <div className="flex justify-between items-start mb-6" style={{ transform: "translateZ(30px)" }}>
              <div className="p-4 bg-indigo-500/10 text-indigo-500 rounded-2xl shadow-lg shadow-indigo-500/5"><Moon size={28} /></div>
              <div className="flex items-center gap-1.5">
-               {habits?.sleep_hours && (
-                 <button 
-                  onClick={() => handleReset('sleep_hours')} 
-                  className="p-2.5 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-xl text-indigo-500 transition-all border border-indigo-500/20 shadow-sm" 
-                  title={t("reset")}
-                 >
-                   <RotateCcw size={16} />
-                 </button>
-               )}
-               <span className="text-[10px] font-black bg-indigo-500 text-white px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg shadow-indigo-500/20">Rest</span>
+               <button 
+                 onClick={() => openLogModal('sleep_hours')} 
+                 className="text-[10px] font-black bg-indigo-500 text-white px-3 py-1.5 rounded-lg uppercase tracking-widest shadow-lg shadow-indigo-500/20 hover:scale-105 transition-transform"
+               >
+                 Log Data
+               </button>
              </div>
           </div>
           <div style={{ transform: "translateZ(60px)" }}>
@@ -451,30 +482,30 @@ export default function Dashboard() {
             
             <div className="divide-y divide-gray-100 dark:divide-gray-800">
               {[
-                { title: t("walk_task"), type: `${t("exercise")} • Blood Sugar Stabilization`, icon: Flame, color: "bg-orange-50 text-orange-500", borderColor: "border-primary-400", completed: false },
-                { title: t("blood_sugar_task"), type: t("tracking"), icon: Droplets, color: "bg-red-50 text-red-500", borderColor: "border-gray-200", completed: !!habits?.blood_sugar },
-                { title: t("quinoa_task"), type: t("nutrition"), icon: UtensilsCrossed, color: "bg-green-50 text-green-500", borderColor: "border-gray-300", completed: false },
-                { title: t("sleep_task"), type: t("lifestyle"), icon: Moon, color: "bg-indigo-50 text-indigo-500", borderColor: "border-gray-200", completed: !!habits?.sleep_hours }
+                { title: t("walk_task"), type: `${t("exercise")} • Blood Sugar Stabilization`, icon: Flame, color: "bg-orange-50 text-orange-500", borderColor: "border-primary-400" },
+                { title: t("blood_sugar_task"), type: t("tracking"), icon: Droplets, color: "bg-red-50 text-red-500", borderColor: "border-gray-200" },
+                { title: t("quinoa_task"), type: t("nutrition"), icon: UtensilsCrossed, color: "bg-green-50 text-green-500", borderColor: "border-gray-300" },
+                { title: t("sleep_task"), type: t("lifestyle"), icon: Moon, color: "bg-indigo-50 text-indigo-500", borderColor: "border-gray-200" }
               ].map((task, i) => {
                 const Icon = task.icon;
-                const isCompleted = task.completed;
+                const isCompleted = completedTasks.includes(i) || (i === 1 && !!habits?.blood_sugar) || (i === 3 && !!habits?.sleep_hours);
                 return (
-                  <div key={i} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group cursor-default">
+                  <div key={i} onClick={() => toggleTask(i)} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group cursor-pointer">
                     <div className="flex items-center gap-4">
                       <div className={`p-3 rounded-2xl ${task.color} group-hover:scale-110 transition-transform`}>
                         <Icon size={20} />
                       </div>
                       <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white text-base">{task.title}</h3>
+                        <h3 className={`font-bold text-base transition-colors ${isCompleted ? 'text-gray-400 line-through' : 'text-gray-900 dark:text-white'}`}>{task.title}</h3>
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{task.type}</p>
                       </div>
                     </div>
                     {isCompleted ? (
-                      <div className="p-2 bg-green-500 text-white rounded-xl shadow-lg shadow-green-500/20">
+                      <div className="p-2 bg-green-500 text-white rounded-xl shadow-lg shadow-green-500/20 transition-all scale-100">
                         <Check size={18} strokeWidth={3} />
                       </div>
                     ) : (
-                      <div className="w-6 h-6 rounded-lg border-2 border-gray-200 dark:border-gray-700 group-hover:border-primary-400 transition-colors"></div>
+                      <div className="w-6 h-6 rounded-lg border-2 border-gray-200 dark:border-gray-700 group-hover:border-primary-400 transition-colors scale-100"></div>
                     )}
                   </div>
                 );
@@ -619,6 +650,74 @@ export default function Dashboard() {
                </button>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Vitals Logging Modal */}
+      <AnimatePresence>
+        {showLogModal && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowLogModal(false)}
+              className="absolute inset-0 bg-gray-900/80 backdrop-blur-xl cursor-pointer" 
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="bg-white dark:bg-[#0c0f16] rounded-[3rem] p-8 md:p-12 w-full max-w-sm relative z-10 border border-white/20 shadow-[0_0_80px_rgba(0,0,0,0.5)] text-center"
+            >
+               <button onClick={() => setShowLogModal(false)} className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors">
+                  <X size={20} className="text-gray-500" />
+               </button>
+               
+               <div className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-xl ${
+                 activeLogType === 'blood_sugar' ? 'bg-red-500/10 text-red-500' :
+                 activeLogType === 'blood_pressure' ? 'bg-blue-500/10 text-blue-500' :
+                 activeLogType === 'weight' ? 'bg-teal-500/10 text-teal-500' :
+                 'bg-indigo-500/10 text-indigo-500'
+               }`}>
+                 {activeLogType === 'blood_sugar' && <Droplets size={32} />}
+                 {activeLogType === 'blood_pressure' && <Activity size={32} />}
+                 {activeLogType === 'weight' && <Monitor size={32} />}
+                 {activeLogType === 'sleep_hours' && <Moon size={32} />}
+               </div>
+               
+               <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight">Log Data</h2>
+               <p className="text-gray-500 dark:text-gray-400 font-medium mb-8 uppercase tracking-widest text-[10px]">Today's Vitals Tracking</p>
+               
+               <form onSubmit={handleLogSubmit} className="space-y-6">
+                 <div>
+                   <input 
+                     required 
+                     type={activeLogType === 'blood_pressure' ? 'text' : 'number'}
+                     step={activeLogType === 'weight' || activeLogType === 'sleep_hours' ? '0.1' : '1'}
+                     value={logValue} 
+                     onChange={e => setLogValue(e.target.value)} 
+                     className="w-full bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl px-5 py-4 text-center text-4xl font-black text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-gray-300" 
+                     placeholder={
+                       activeLogType === 'blood_sugar' ? '110' :
+                       activeLogType === 'blood_pressure' ? '120/80' :
+                       activeLogType === 'weight' ? '70.5' :
+                       '7.5'
+                     } 
+                   />
+                   <p className="text-xs font-bold text-gray-400 mt-3 uppercase tracking-widest">
+                     {activeLogType === 'blood_sugar' && 'mg/dL'}
+                     {activeLogType === 'blood_pressure' && 'mmHg'}
+                     {activeLogType === 'weight' && 'kg'}
+                     {activeLogType === 'sleep_hours' && 'Hours'}
+                   </p>
+                 </div>
+                  <button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black py-4 rounded-3xl shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all uppercase tracking-[0.2em] text-sm mt-4">
+                    Save Record
+                  </button>
+               </form>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
