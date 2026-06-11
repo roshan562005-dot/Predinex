@@ -93,54 +93,6 @@ export default function EducationPage() {
         </p>
       </motion.div>
 
-      {/* Featured Video — Coming Soon */}
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.1 }}
-        className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl border border-gray-700 shadow-2xl overflow-hidden relative"
-      >
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl mix-blend-overlay pointer-events-none" />
-        <div className="h-80 w-full relative overflow-hidden">
-          <img
-            src="/ai-metabolic-video.png"
-            alt="How Carbohydrates Impact Your Health"
-            className="w-full h-full object-cover opacity-30 grayscale"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-gray-900/40" />
-
-          {/* Coming Soon Overlay */}
-          <div className="absolute inset-0 flex flex-col items-center justify-start pt-12 gap-4">
-            <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-              <Lock size={28} strokeWidth={1.5} className="text-white/80" />
-            </div>
-            <div className="text-center bg-black/40 backdrop-blur-sm px-6 py-4 rounded-2xl border border-white/5">
-              <span className="inline-block bg-amber-500/90 text-white text-[11px] font-black px-4 py-2 rounded-full uppercase tracking-[0.2em] shadow-lg mb-3">
-                🎬 Available Soon
-              </span>
-              <p className="text-white text-sm font-semibold mt-3">
-                Our clinical video series is currently in production
-              </p>
-            </div>
-          </div>
-
-          <div className="absolute bottom-8 left-8 right-8 z-10">
-            <div className="flex gap-3 mb-3">
-              <span className="bg-primary-500/80 text-white text-[10px] font-extrabold px-3 py-1.5 rounded-md uppercase tracking-wider flex items-center gap-1 shadow-lg">
-                <Sparkles size={12} /> {t("expert_curated") || "Expert Curated"}
-              </span>
-              <span className="bg-black/40 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-md border border-white/10 flex items-center gap-1.5">
-                <Video size={14} className="text-blue-400" /> 08:32
-              </span>
-            </div>
-            <h2 className="text-3xl font-black text-white/70 mb-2 tracking-tight uppercase">
-              {t("carb_impact_title") || "How Carbohydrates Impact Your Health"}
-            </h2>
-            <p className="text-gray-400 font-medium max-w-2xl line-clamp-1">
-              {t("carb_impact_desc") || "Explore the biological journey of glucose and how it influences your energy and metabolic stability."}
-            </p>
-          </div>
-        </div>
       {/* ─── PREMIUM CONTENT AREA ─── */}
       <div className="relative">
         {!loading && !isPremium && <PaywallOverlay />}
