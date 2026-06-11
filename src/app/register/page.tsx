@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Leaf, ShieldCheck, Mail, Lock, CheckCircle2, User } from "lucide-react";
+import { ArrowRight, Leaf, ShieldCheck, Mail, Lock, CheckCircle2, User, Phone } from "lucide-react";
 import { signup } from "../login/actions";
 
 export default function RegisterPage({
@@ -52,6 +52,24 @@ export default function RegisterPage({
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-colors"
                   placeholder="John Doe"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="phone">
+                Phone Number <span className="text-gray-400 font-normal">(for WhatsApp reminders)</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Phone className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-colors"
+                  placeholder="+91 98765 43210"
                 />
               </div>
             </div>

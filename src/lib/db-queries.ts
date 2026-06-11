@@ -68,7 +68,8 @@ export interface Post {
 export async function createUser(
   email: string,
   password: string,
-  fullName: string
+  fullName: string,
+  phone?: string
 ): Promise<User | null> {
   const existing = await getUserByEmail(email);
   if (existing) return null; // Email already in use
@@ -83,6 +84,7 @@ export async function createUser(
       email: email.toLowerCase(),
       password_hash,
       full_name: fullName,
+      phone: phone || null,
       auth_provider: 'email',
     });
 

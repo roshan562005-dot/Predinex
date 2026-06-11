@@ -23,6 +23,8 @@ export async function login(formData: FormData) {
   }
 }
 
+import { sendWhatsAppMessage } from '@/lib/whatsapp';
+
 /** Sign in with Google OAuth */
 export async function loginWithGoogle() {
   await signIn('google', { redirectTo: '/dashboard' });
@@ -33,6 +35,7 @@ export async function signup(formData: FormData) {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
   const fullName = formData.get('name') as string;
+  const phone = formData.get('phone') as string;
 
   if (!email || !password || !fullName) {
     redirect('/register?error=' + encodeURIComponent('All fields are required.'));
@@ -42,9 +45,17 @@ export async function signup(formData: FormData) {
     redirect('/register?error=' + encodeURIComponent('Password must be at least 8 characters.'));
   }
 
-  const user = await createUser(email, password, fullName);
+  const user = await createUser(email, password, fullName, phone);
   if (!user) {
     redirect('/register?error=' + encodeURIComponent('An account with this email already exists.'));
+  }
+
+  // Send Welcome WhatsApp Message if phone is provided
+  if (phone) {
+    await sendWhatsAppMessage(
+      phone,
+      `Hello ${fullName}! Welcome to Predinex 🌿. We're thrilled to have you start your journey toward better metabolic health. Check your dashboard to begin your daily tracking!`
+    );
   }
 
   // Sign in immediately after registration
