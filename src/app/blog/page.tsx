@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { blogPosts } from '@/lib/blog-data';
-import PredinexLogo from '@/components/PredinexLogo';
+import { PredinexLogo } from '@/components/PredinexLogo';
 import { ArrowRight, BookOpen, Calendar, User } from 'lucide-react';
 import type { Metadata } from 'next';
 

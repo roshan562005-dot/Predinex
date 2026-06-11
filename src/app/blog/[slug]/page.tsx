@@ -1,7 +1,7 @@
 import { blogPosts } from '@/lib/blog-data';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import PredinexLogo from '@/components/PredinexLogo';
+import { PredinexLogo } from '@/components/PredinexLogo';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 import type { Metadata } from 'next';
 
