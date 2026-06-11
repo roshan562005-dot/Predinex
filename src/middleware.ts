@@ -19,7 +19,7 @@ export default auth((req) => {
   }
 
   // Admin route: require both login AND the admin password cookie
-  if (pathname.startsWith('/admin')) {
+  if (pathname.startsWith('/admin') && pathname !== '/admin-login') {
     if (!isLoggedIn) {
       return NextResponse.redirect(new URL('/login?callbackUrl=/admin', req.url));
     }
