@@ -85,6 +85,15 @@ export async function updateUserProfile(data: any) {
   revalidatePath('/profile');
 }
 
+/** Check if user is premium */
+export async function getPremiumStatus(): Promise<boolean> {
+  const session = await auth();
+  if (!session?.user?.id) return false;
+  const { getUserById } = require('@/lib/db-queries');
+  const user = await getUserById(session.user.id);
+  return user?.is_premium || false;
+}
+
 // ─── Assessment Fetch ─────────────────────────────────────────────────────────
 
 /** Fetch latest assessment */

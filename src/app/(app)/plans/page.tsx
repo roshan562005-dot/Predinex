@@ -3,9 +3,10 @@
 import React, { useState, useTransition, useEffect } from "react";
 import { UtensilsCrossed, Clock, Flame, Calendar, CheckCircle2, ChevronRight, Sparkles, Activity, Droplets, Moon, Sun, Plus, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { upsertHabits, getDailyHabits, getLatestAssessment } from "@/app/(app)/actions";
+import { upsertHabits, getDailyHabits, getLatestAssessment, getPremiumStatus } from "@/app/(app)/actions";
 import { dietData, Recipe } from "./dietData";
 import MealAnalyzer from "@/components/MealAnalyzer";
+import { PaywallOverlay } from "@/components/PaywallOverlay";
 
 import { useInclusivity } from "@/context/InclusivityContext";
 
@@ -15,6 +16,7 @@ export default function PlansPage() {
   const [sleepDone, setSleepDone] = useState(false);
   const [sunDone, setSunDone] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isPremium, setIsPremium] = useState(false);
   const [, startTransition] = useTransition();
 
   const [selectedDay, setSelectedDay] = useState(1); // Start on day 1
@@ -25,15 +27,17 @@ export default function PlansPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [habits] = await Promise.all([
+        const [habits, _, premium] = await Promise.all([
           getDailyHabits(),
-          getLatestAssessment()
+          getLatestAssessment(),
+          getPremiumStatus()
         ]);
         if (habits) {
           setWaterMl(habits.water_ml || 0);
           setSleepDone(!!(habits.sleep_hours && habits.sleep_hours > 0));
           setSunDone(!!(habits.sunlight_mins && habits.sunlight_mins > 0));
         }
+        setIsPremium(premium);
       } finally {
         setLoading(false);
       }
@@ -120,19 +124,23 @@ export default function PlansPage() {
         </div>
       </motion.div>
       
-      {/* Nutrition Meal Analyzer */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="relative z-10">
-        <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="text-violet-500" size={20} />
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Nutrition Meal Analyser</h2>
-        </div>
-        <MealAnalyzer />
-      </motion.div>
+      {/* ─── PREMIUM CONTENT AREA ─── */}
+      <div className="relative">
+        {!isPremium && <PaywallOverlay />}
+        
+        {/* Nutrition Meal Analyzer */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className={`relative z-10 ${!isPremium ? 'opacity-30 pointer-events-none select-none blur-sm' : ''}`}>
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="text-violet-500" size={20} />
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Nutrition Meal Analyser</h2>
+          </div>
+          <MealAnalyzer />
+        </motion.div>
 
       {/* 30-Day Schedule Selector */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}
-        className="glass-panel p-6 rounded-3xl relative z-10 border border-gray-200/50 dark:border-white/5"
+        className={`glass-panel p-6 rounded-3xl relative z-10 border border-gray-200/50 dark:border-white/5 ${!isPremium ? 'opacity-30 pointer-events-none select-none blur-sm' : ''}`}
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
@@ -186,7 +194,7 @@ export default function PlansPage() {
       </motion.div>
 
       {/* Today's Diet Plan */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="relative z-10">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className={`relative z-10 ${!isPremium ? 'opacity-30 pointer-events-none select-none blur-sm' : ''}`}>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <h2 className="text-xl font-bold flex items-center gap-2 text-gray-900 dark:text-white">
             <UtensilsCrossed className="text-primary-500" /> {selectedDay === 3 ? "Today's Clinical Menu" : `Day ${selectedDay} Menu`}
@@ -280,7 +288,7 @@ export default function PlansPage() {
       </motion.div>
 
       {/* Today's Lifestyle Habits */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="mt-12 relative z-10">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className={`mt-12 relative z-10 ${!isPremium ? 'opacity-30 pointer-events-none select-none blur-sm' : ''}`}>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-extrabold flex items-center gap-2 text-gray-900 dark:text-white">
             <Calendar className="text-emerald-500" size={24} /> Daily Habits
@@ -495,6 +503,7 @@ export default function PlansPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
 
     </div>
   );

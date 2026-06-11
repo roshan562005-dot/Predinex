@@ -13,6 +13,8 @@ export interface User {
   google_id: string | null;
   avatar_url: string | null;
   created_at: string;
+  is_premium?: boolean;
+  subscription_end_date?: string | null;
 }
 
 export interface Profile {
