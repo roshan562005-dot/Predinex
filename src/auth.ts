@@ -49,7 +49,9 @@ function SupabaseAdapter(): Adapter {
         .eq('provider_account_id', providerAccountId)
         .maybeSingle();
       if (error || !account) return null;
-      return this.getUser!(account.user_id);
+      const { data: row } = await supabase.from('users').select('*').eq('id', account.user_id).maybeSingle();
+      if (!row) return null;
+      return { id: row.id, email: row.email, name: row.full_name, image: row.avatar_url, emailVerified: null };
     },
 
     async updateUser(user): Promise<AdapterUser> {
@@ -62,7 +64,8 @@ function SupabaseAdapter(): Adapter {
         })
         .eq('id', user.id);
       if (error) console.error('Adapter updateUser error:', error);
-      return this.getUser!(user.id) as unknown as AdapterUser;
+      const { data: row } = await supabase.from('users').select('*').eq('id', user.id).maybeSingle();
+      return { id: row?.id || user.id, email: row?.email || user.email!, name: row?.full_name || (user.name ?? ''), image: row?.avatar_url || (user.image ?? null), emailVerified: null };
     },
 
     async linkAccount(account): Promise<void> {
@@ -180,6 +183,8 @@ function SupabaseAdapter(): Adapter {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  debug: process.env.NODE_ENV === 'development',
+  secret: process.env.AUTH_SECRET,
   adapter: SupabaseAdapter(),
   session: {
     strategy: "jwt",
@@ -187,8 +192,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.AUTH_GOOGLE_ID || process.env.GOOGLE_CLIENT_ID || 'missing_client_id',
+      clientSecret: process.env.AUTH_GOOGLE_SECRET || process.env.GOOGLE_CLIENT_SECRET || 'missing_client_secret',
     }),
     Credentials({
       name: 'Email & Password',
