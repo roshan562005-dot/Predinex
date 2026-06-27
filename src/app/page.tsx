@@ -383,37 +383,37 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="group overflow-hidden rounded-[2rem] border border-white/10 relative bg-black aspect-square shadow-2xl">
               <img 
-                src="/images/seo/diabetes-reversal.png" 
-                alt="High quality cinematic medical dashboard showing diabetes reversal progress and pre-diabetes clinical management" 
+                src="/marketing/ui-mockup.png" 
+                alt="Predinex Mobile UI App Mockup - AI Metabolic Health Tracking for Pre-Diabetes" 
                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
               />
               <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
-                <h3 className="text-white font-black text-2xl tracking-tight">Diabetes Reversal</h3>
-                <p className="text-emerald-400 font-semibold mt-1">Clinical Analytics</p>
+                <h3 className="text-white font-black text-2xl tracking-tight">Clinical Dashboard</h3>
+                <p className="text-emerald-400 font-semibold mt-1">Mobile Telemetry</p>
               </div>
             </div>
             
             <div className="group overflow-hidden rounded-[2rem] border border-white/10 relative bg-black aspect-square shadow-2xl md:-translate-y-8">
               <img 
-                src="/images/seo/metabolic-health-ai.png" 
-                alt="Futuristic AI core analyzing human metabolic health and glucose monitoring data for diabetes prevention" 
+                src="/marketing/biotwin-concept.png" 
+                alt="Predinex AI Metabolic BioTwin Concept - Advanced DNA and Diabetes Reversal Technology" 
                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
               />
               <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
-                <h3 className="text-white font-black text-2xl tracking-tight">AI Tracking</h3>
-                <p className="text-emerald-400 font-semibold mt-1">Metabolic Health</p>
+                <h3 className="text-white font-black text-2xl tracking-tight">AI BioTwin</h3>
+                <p className="text-emerald-400 font-semibold mt-1">Predictive Engine</p>
               </div>
             </div>
             
             <div className="group overflow-hidden rounded-[2rem] border border-white/10 relative bg-black aspect-square shadow-2xl">
               <img 
-                src="/images/seo/clinical-diabetes-diet.png" 
-                alt="Beautiful fresh healthy metabolic diet plate for diabetes management with avocado and wild salmon" 
+                src="/marketing/wearable-tech.png" 
+                alt="Predinex Wearable Tech Integration - Real-time Glucose and Blood Pressure Smartwatch" 
                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
               />
               <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
-                <h3 className="text-white font-black text-2xl tracking-tight">Clinical Diet</h3>
-                <p className="text-emerald-400 font-semibold mt-1">Nutrition Optimization</p>
+                <h3 className="text-white font-black text-2xl tracking-tight">Wearable Sync</h3>
+                <p className="text-emerald-400 font-semibold mt-1">Real-time Analysis</p>
               </div>
             </div>
           </div>
