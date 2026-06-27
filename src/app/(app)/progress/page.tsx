@@ -20,6 +20,7 @@ import {
   Droplet,
   Scale,
   GlassWater,
+  HeartPulse,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
@@ -50,7 +51,7 @@ export default function ProgressPage() {
   const { t } = useInclusivity();
   const [activeTab, setActiveTab] = useState("bloodsugar");
   const [showLogModal, setShowLogModal] = useState(false);
-  const [logType, setLogType] = useState<"bloodSugar" | "weight" | "water" | "steps">("bloodSugar");
+  const [logType, setLogType] = useState<"bloodSugar" | "weight" | "water" | "steps" | "bp">("bloodSugar");
   const [history, setHistory] = useState<any[]>([]);
   const [assessmentScore, setAssessmentScore] = useState<number>(50);
   const [loading, setLoading] = useState(true);
@@ -83,7 +84,14 @@ export default function ProgressPage() {
       if (logType === 'bloodSugar') {
         await upsertHabits({ 
           date, 
-          blood_sugar: parseFloat(val1) || undefined 
+          blood_sugar: parseFloat(val1) || undefined,
+          post_meal_blood_sugar: parseFloat(val2) || undefined,
+        });
+      } else if (logType === 'bp') {
+        await upsertHabits({
+          date,
+          systolic_bp: parseInt(val1) || undefined,
+          diastolic_bp: parseInt(val2) || undefined,
         });
       } else if (logType === 'weight') {
         await upsertHabits({ 
@@ -127,6 +135,9 @@ export default function ProgressPage() {
     date: new Date(h.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
     weight: h.weight,
     blood_sugar: h.blood_sugar,
+    post_meal_blood_sugar: h.post_meal_blood_sugar,
+    systolic_bp: h.systolic_bp,
+    diastolic_bp: h.diastolic_bp,
     steps: h.steps,
     water: h.water_ml / 250 // Convert ml to glasses (approx)
   }));
@@ -187,6 +198,16 @@ export default function ProgressPage() {
           Blood Sugar
         </button>
         <button
+          onClick={() => setActiveTab("bp")}
+          className={`pb-3 px-4 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${
+            activeTab === "bp"
+              ? "border-rose-500 text-rose-600 dark:text-rose-400"
+              : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-700"
+          }`}
+        >
+          Blood Pressure
+        </button>
+        <button
           onClick={() => setActiveTab("weight")}
           className={`pb-3 px-4 font-medium text-sm whitespace-nowrap border-b-2 transition-colors ${
             activeTab === "weight"
@@ -221,11 +242,13 @@ export default function ProgressPage() {
           <div>
             <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
               {activeTab === "bloodsugar" && "Weekly Glucose Levels"}
+              {activeTab === "bp" && "Blood Pressure Trends"}
               {activeTab === "weight" && "Weight Journey"}
               {activeTab === "activity" && "Weekly Activity"}
             </h2>
             <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mt-1 uppercase tracking-widest">
               {activeTab === "bloodsugar" && "Fasting vs Post-Meal (mg/dL)"}
+              {activeTab === "bp" && "Systolic / Diastolic (mmHg)"}
               {activeTab === "weight" && "Last 30 days trend (lbs)"}
               {activeTab === "activity" && "Daily step count & active minutes"}
             </p>
@@ -233,7 +256,7 @@ export default function ProgressPage() {
           
           <div className="flex items-center gap-3">
             <div className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-1.5 border shadow-sm ${
-              activeTab === "weight" || activeTab === "bloodsugar"
+              activeTab === "weight" || activeTab === "bloodsugar" || activeTab === "bp"
                 ? "bg-green-50 text-green-700 border-green-200 shadow-green-500/10"
                 : "bg-blue-50 text-blue-700 border-blue-200 shadow-blue-500/10"
             }`}>
@@ -243,7 +266,9 @@ export default function ProgressPage() {
             
             <button 
               onClick={() => { 
-                setLogType(activeTab === "weight" ? "weight" : activeTab === "activity" ? "steps" : "bloodSugar"); 
+                const map: Record<string, typeof logType> = { bloodsugar: "bloodSugar", bp: "bp", weight: "weight", activity: "steps" };
+                setLogType(map[activeTab] || "bloodSugar"); 
+                setVal1(""); setVal2("");
                 setShowLogModal(true); 
               }}
               className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg flex items-center gap-1.5 transition-transform hover:scale-105"
@@ -257,7 +282,7 @@ export default function ProgressPage() {
           <ResponsiveContainer width="100%" height="100%">
             {activeTab === "bloodsugar" ? (
               <LineChart
-                data={chartData.filter(d => d.blood_sugar)}
+                data={chartData.filter(d => d.blood_sugar || d.post_meal_blood_sugar)}
                 margin={{ top: 5, right: 30, left: -20, bottom: 5 }}
               >
                 <CartesianGrid
@@ -276,7 +301,7 @@ export default function ProgressPage() {
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: "#6B7280", fontSize: 12 }}
-                  domain={[80, 160]}
+                  domain={[70, 200]}
                 />
                 <Tooltip
                   contentStyle={{
@@ -293,9 +318,74 @@ export default function ProgressPage() {
                 <Line
                   type="monotone"
                   dataKey="blood_sugar"
-                  name="Glucose (mg/dL)"
+                  name="Fasting (mg/dL)"
                   stroke="#22C55E"
                   strokeWidth={3}
+                  dot={{ r: 4, strokeWidth: 2 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="post_meal_blood_sugar"
+                  name="Post-Meal (mg/dL)"
+                  stroke="#F97316"
+                  strokeWidth={3}
+                  strokeDasharray="6 3"
+                  dot={{ r: 4, strokeWidth: 2 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            ) : activeTab === "bp" ? (
+              <LineChart
+                data={chartData.filter(d => d.systolic_bp || d.diastolic_bp)}
+                margin={{ top: 5, right: 30, left: -20, bottom: 5 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="#E5E7EB"
+                />
+                <XAxis
+                  dataKey="date"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#6B7280", fontSize: 12 }}
+                  dy={10}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#6B7280", fontSize: 12 }}
+                  domain={[50, 180]}
+                />
+                <Tooltip
+                  contentStyle={{
+                    borderRadius: "12px",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                    backgroundColor: "rgba(17, 20, 29, 0.8)",
+                    backdropFilter: "blur(8px)",
+                    color: "#fff"
+                  }}
+                  itemStyle={{ fontWeight: 500 }}
+                  labelStyle={{ color: "#9CA3AF", marginBottom: "4px" }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="systolic_bp"
+                  name="Systolic (mmHg)"
+                  stroke="#EF4444"
+                  strokeWidth={3}
+                  dot={{ r: 4, strokeWidth: 2 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="diastolic_bp"
+                  name="Diastolic (mmHg)"
+                  stroke="#8B5CF6"
+                  strokeWidth={3}
+                  strokeDasharray="6 3"
                   dot={{ r: 4, strokeWidth: 2 }}
                   activeDot={{ r: 6 }}
                 />
@@ -505,41 +595,49 @@ export default function ProgressPage() {
               <div className="p-6 md:p-8">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                    Log {logType === "bloodSugar" ? "Blood Sugar" : logType === "weight" ? "Weight" : logType === "steps" ? "Steps" : "Water"}
+                    Log {logType === "bloodSugar" ? "Blood Sugar" : logType === "bp" ? "Blood Pressure" : logType === "weight" ? "Weight" : logType === "steps" ? "Steps" : "Water"}
                   </h3>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${logType === "bloodSugar" ? "bg-red-50 text-red-500 dark:bg-red-500/10" : logType === "water" ? "bg-cyan-50 text-cyan-500 dark:bg-cyan-500/10" : "bg-blue-50 text-blue-500 dark:bg-blue-500/10"}`}>
-                    {logType === "bloodSugar" ? <Droplet size={20} /> : logType === "water" ? <GlassWater size={20} /> : <Scale size={20} />}
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${logType === "bloodSugar" ? "bg-red-50 text-red-500 dark:bg-red-500/10" : logType === "bp" ? "bg-rose-50 text-rose-500 dark:bg-rose-500/10" : logType === "water" ? "bg-cyan-50 text-cyan-500 dark:bg-cyan-500/10" : "bg-blue-50 text-blue-500 dark:bg-blue-500/10"}`}>
+                    {logType === "bloodSugar" ? <Droplet size={20} /> : logType === "bp" ? <HeartPulse size={20} /> : logType === "water" ? <GlassWater size={20} /> : <Scale size={20} />}
                   </div>
                 </div>
                 
-                <div className="flex gap-2 mb-6">
+                <div className="flex gap-2 mb-6 flex-wrap">
                     <button
-                      onClick={() => setLogType("bloodSugar")}
-                      className={`flex-1 py-1 text-xs font-bold rounded-lg transition-colors ${
+                      onClick={() => { setLogType("bloodSugar"); setVal1(""); setVal2(""); }}
+                      className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors ${
                         logType === "bloodSugar" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-white/5 dark:text-gray-400 dark:hover:bg-white/10"
                       }`}
                     >
                       Glucose
                     </button>
                     <button 
-                      onClick={() => setLogType("weight")}
-                      className={`flex-1 py-1 text-xs font-bold rounded-lg transition-colors ${
+                      onClick={() => { setLogType("bp"); setVal1(""); setVal2(""); }}
+                      className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors ${
+                        logType === "bp" ? "bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400" : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-white/5 dark:text-gray-400 dark:hover:bg-white/10"
+                      }`}
+                    >
+                      BP
+                    </button>
+                    <button 
+                      onClick={() => { setLogType("weight"); setVal1(""); setVal2(""); }}
+                      className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors ${
                         logType === "weight" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-white/5 dark:text-gray-400 dark:hover:bg-white/10"
                       }`}
                     >
                       Weight
                     </button>
                     <button 
-                      onClick={() => setLogType("water")}
-                      className={`flex-1 py-1 text-xs font-bold rounded-lg transition-colors ${
+                      onClick={() => { setLogType("water"); setVal1(""); setVal2(""); }}
+                      className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors ${
                         logType === "water" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-white/5 dark:text-gray-400 dark:hover:bg-white/10"
                       }`}
                     >
                       Water
                     </button>
                     <button 
-                      onClick={() => setLogType("steps")}
-                      className={`flex-1 py-1 text-xs font-bold rounded-lg transition-colors ${
+                      onClick={() => { setLogType("steps"); setVal1(""); setVal2(""); }}
+                      className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors ${
                         logType === "steps" ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400" : "bg-gray-50 text-gray-500 hover:bg-gray-100 dark:bg-white/5 dark:text-gray-400 dark:hover:bg-white/10"
                       }`}
                     >
@@ -549,15 +647,55 @@ export default function ProgressPage() {
 
                 <div className="space-y-5">
                   {logType === "bloodSugar" ? (
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Glucose Level (mg/dL)</label>
-                      <input 
-                        type="number" 
-                        value={val1}
-                        onChange={(e) => setVal1(e.target.value)}
-                        placeholder="e.g. 102" 
-                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500/50 font-medium transition-shadow dark:text-white" 
-                      />
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Fasting Glucose (mg/dL)</label>
+                        <input 
+                          type="number" 
+                          value={val1}
+                          onChange={(e) => setVal1(e.target.value)}
+                          placeholder="e.g. 102" 
+                          className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 font-medium transition-shadow dark:text-white" 
+                        />
+                        <p className="text-[11px] text-gray-400 mt-1">Measured before breakfast (empty stomach)</p>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Post-Meal Glucose (mg/dL)</label>
+                        <input 
+                          type="number" 
+                          value={val2}
+                          onChange={(e) => setVal2(e.target.value)}
+                          placeholder="e.g. 140" 
+                          className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500/50 font-medium transition-shadow dark:text-white" 
+                        />
+                        <p className="text-[11px] text-gray-400 mt-1">Measured 2 hours after a meal</p>
+                      </div>
+                    </div>
+                  ) : logType === "bp" ? (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Systolic (mmHg) — Top Number</label>
+                        <input 
+                          type="number" 
+                          value={val1}
+                          onChange={(e) => setVal1(e.target.value)}
+                          placeholder="e.g. 120" 
+                          className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-rose-500/50 font-medium transition-shadow dark:text-white" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Diastolic (mmHg) — Bottom Number</label>
+                        <input 
+                          type="number" 
+                          value={val2}
+                          onChange={(e) => setVal2(e.target.value)}
+                          placeholder="e.g. 80" 
+                          className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-violet-500/50 font-medium transition-shadow dark:text-white" 
+                        />
+                      </div>
+                      <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 rounded-xl p-3">
+                        <p className="text-xs font-semibold text-rose-700 dark:text-rose-300">Normal BP: Below 120/80 mmHg</p>
+                      </div>
                     </div>
                   ) : logType === "weight" ? (
                     <div>

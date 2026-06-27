@@ -47,6 +47,9 @@ export interface DailyHabits {
   sunlight_mins: number | null;
   mindfulness_mins: number | null;
   blood_sugar: number | null;
+  post_meal_blood_sugar: number | null;
+  systolic_bp: number | null;
+  diastolic_bp: number | null;
   steps: number | null;
   weight: number | null;
 }
@@ -531,6 +534,9 @@ export async function getAllHabits(): Promise<(DailyHabits & { full_name: string
       sunlight_mins,
       mindfulness_mins,
       blood_sugar,
+      post_meal_blood_sugar,
+      systolic_bp,
+      diastolic_bp,
       steps,
       weight,
       users:user_id (
@@ -553,6 +559,9 @@ export async function getAllHabits(): Promise<(DailyHabits & { full_name: string
     sunlight_mins: row.sunlight_mins,
     mindfulness_mins: row.mindfulness_mins,
     blood_sugar: row.blood_sugar,
+    post_meal_blood_sugar: row.post_meal_blood_sugar,
+    systolic_bp: row.systolic_bp,
+    diastolic_bp: row.diastolic_bp,
     steps: row.steps,
     weight: row.weight,
     full_name: row.users?.full_name || 'Unknown',

@@ -47,6 +47,9 @@ export async function upsertHabits(data: {
   mindfulness_mins?: number;
   workout_minutes?: number;
   blood_sugar?: number;
+  post_meal_blood_sugar?: number;
+  systolic_bp?: number;
+  diastolic_bp?: number;
   blood_pressure?: string;
   steps?: number;
   weight?: number;
