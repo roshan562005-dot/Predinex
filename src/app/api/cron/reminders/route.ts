@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { sendWhatsAppMessage } from '@/lib/whatsapp';
+import { sendReminderEmail } from '@/lib/email';
 
 // Define route as edge or node. We use node because of crypto/Twilio etc.
 export const runtime = 'nodejs';
@@ -20,15 +20,15 @@ export async function GET(request: Request) {
   try {
     const today = new Date().toISOString().split('T')[0];
 
-    // 1. Get all users who have a phone number attached
+    // 1. Get all users who have an email attached (which is all of them)
     const { data: users, error: usersError } = await supabase
       .from('users')
-      .select('id, full_name, phone')
-      .not('phone', 'is', null);
+      .select('id, full_name, email')
+      .not('email', 'is', null);
 
     if (usersError) throw usersError;
     if (!users || users.length === 0) {
-      return NextResponse.json({ message: 'No users with phone numbers found.' });
+      return NextResponse.json({ message: 'No users with emails found.' });
     }
 
     // 2. Get today's habits
@@ -46,12 +46,11 @@ export async function GET(request: Request) {
     
     let sentCount = 0;
 
-    // 4. Send WhatsApp reminders
+    // 4. Send Email reminders
     for (const user of unloggedUsers) {
-      if (user.phone) {
-        const message = `Hi ${user.full_name.split(' ')[0]} 👋! Just a friendly reminder from Predinex: You haven't logged your vitals today. Staying consistent is key to lowering your blood sugar. Log in here to update your dashboard: https://predinex.com/progress`;
-        
-        const success = await sendWhatsAppMessage(user.phone, message);
+      if (user.email) {
+        const firstName = user.full_name ? user.full_name.split(' ')[0] : 'there';
+        const { success } = await sendReminderEmail(user.email, firstName);
         if (success) {
           sentCount++;
         }
