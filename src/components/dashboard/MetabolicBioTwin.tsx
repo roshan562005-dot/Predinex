@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Activity, Droplets, Binary, Orbit, Sparkles } from "lucide-react";
 import { useInclusivity } from "@/context/InclusivityContext";
-import { useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useMotionValue, useSpring, useTransform, animate } from "framer-motion";
 
 interface MetabolicBioTwinProps {
   score: number;
@@ -238,18 +238,48 @@ export default function MetabolicBioTwin({ score, habits }: MetabolicBioTwinProp
               const statusColor = metric.val >= 80 ? "text-emerald-400" : metric.val >= 60 ? "text-blue-400" : metric.val >= 40 ? "text-amber-400" : "text-rose-400";
               
               return (
-              <div
+              <motion.div
                 key={i}
-                className="flex flex-col items-center p-3 rounded-[1.75rem] bg-white/5 border border-white/5 relative overflow-hidden group/item text-center justify-center"
+                initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.15 * i, ease: "easeOut" }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                className="flex flex-col items-center p-3 rounded-[1.75rem] bg-white/5 border border-white/5 relative overflow-hidden group/item text-center justify-center cursor-default"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${metric.color} opacity-0 group-hover/item:opacity-8 transition-opacity duration-500`} />
-                <div className={`${metric.accent} mb-1.5 group-hover/item:scale-110 transition-transform duration-500`}>
+                <div className={`absolute inset-0 bg-gradient-to-br ${metric.color} opacity-0 group-hover/item:opacity-10 transition-opacity duration-500`} />
+                <motion.div 
+                  className={`${metric.accent} mb-1.5`}
+                  animate={{ rotate: predictionMode ? [0, 360] : 0 }}
+                  transition={{ duration: 0.6 }}
+                >
                   {metric.icon}
-                </div>
-                <span className="text-xl font-black text-white tracking-widest leading-none">{metric.val}%</span>
-                <span className={`text-[9px] font-black uppercase tracking-widest mt-1.5 ${statusColor}`}>{status}</span>
+                </motion.div>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={`${metric.val}-${predictionMode}`}
+                    initial={{ opacity: 0, y: -10, scale: 0.8 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                    className="text-xl font-black text-white tracking-widest leading-none"
+                  >
+                    {metric.val}%
+                  </motion.span>
+                </AnimatePresence>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={`status-${status}`}
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.5 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    className={`text-[9px] font-black uppercase tracking-widest mt-1.5 ${statusColor}`}
+                  >
+                    {status}
+                  </motion.span>
+                </AnimatePresence>
                 <span className="text-[7.5px] text-gray-400 font-bold uppercase tracking-[0.1em] mt-1 leading-tight">{metric.label}</span>
-              </div>
+              </motion.div>
               );
             })}
           </div>
@@ -276,23 +306,40 @@ export default function MetabolicBioTwin({ score, habits }: MetabolicBioTwinProp
         </div>
 
         {/* AI Insight Box */}
-        <div className="relative z-30 w-full max-w-lg mt-4 bg-emerald-950/40 backdrop-blur-3xl border border-emerald-500/20 rounded-[1.5rem] p-5 shadow-lg [transform:translateZ(100px)]">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="relative z-30 w-full max-w-lg mt-4 bg-emerald-950/40 backdrop-blur-3xl border border-emerald-500/20 rounded-[1.5rem] p-5 shadow-lg [transform:translateZ(100px)]"
+        >
           <div className="flex items-start gap-4">
-            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+            <motion.div 
+              className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0"
+              animate={{ rotate: isGenerating ? [0, 360] : 0 }}
+              transition={{ duration: 1, repeat: isGenerating ? Infinity : 0, ease: "linear" }}
+            >
               <Sparkles size={14} className="text-emerald-400" />
-            </div>
+            </motion.div>
             <div className="flex-1">
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 mb-1">Predinex AI Engine</h4>
               {isGenerating ? (
-                <div className="h-4 w-3/4 bg-white/10 rounded animate-pulse mt-1" />
+                <div className="space-y-1.5">
+                  <div className="h-3 w-full bg-white/10 rounded animate-pulse" />
+                  <div className="h-3 w-3/4 bg-white/10 rounded animate-pulse" />
+                </div>
               ) : (
-                <p className="text-[11px] font-medium text-emerald-50/90 leading-relaxed">
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8 }}
+                  className="text-[11px] font-medium text-emerald-50/90 leading-relaxed"
+                >
                   {aiInsight}
-                </p>
+                </motion.p>
               )}
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Corner diagnostic text */}
         <div className="absolute bottom-5 right-6 opacity-20 pointer-events-none z-10">
