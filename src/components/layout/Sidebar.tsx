@@ -41,6 +41,7 @@ export function Sidebar() {
     { name: t("mindfulness"), href: "/mindfulness", icon: Brain },
     { name: t("education"), href: "/education", icon: BookOpen },
     { name: t("community"), href: "/community", icon: Users },
+    { name: t("telemetry"), href: "/telemetry", icon: Activity },
   ];
 
   useEffect(() => {

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Predinex Patent Drawings</title>
+    <style>
+        body {
+            font-family: "Times New Roman", Times, serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #000000;
+        }
+        .page {
+            width: 210mm;
+            height: 297mm;
+            padding: 25mm 25mm 25mm 25mm;
+            box-sizing: border-box;
+            page-break-after: always;
+            position: relative;
+            margin: 0 auto;
+            border: 1px dashed #ccc; /* Visual aid, hidden in print */
+        }
+        @media print {
+            .page {
+                border: none;
+                margin: 0;
+                width: auto;
+                height: auto;
+            }
+        }
+        .header {
+            text-align: right;
+            font-size: 10pt;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80%;
+        }
+        .footer {
+            position: absolute;
+            bottom: 25mm;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+            max-width: 600px;
+            max-height: 700px;
+        }
+        rect, circle {
+            fill: #ffffff;
+            stroke: #000000;
+            stroke-width: 2;
+        }
+        line, path {
+            fill: none;
+            stroke: #000000;
+            stroke-width: 2;
+        }
+        text {
+            fill: #000000;
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        .title-text {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 14pt;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1: SYSTEM BLOCK DIAGRAM -->
+    <div class="page">
+        <div class="header">SHEET 1 OF 2</div>
+        
+        <div class="canvas-container">
+            <svg viewBox="0 0 600 700">
+                <!-- User Box -->
+                <rect x="200" y="50" width="200" height="60" rx="5" />
+                <text x="300" y="80" font-weight="bold">USER [100]</text>
+                
+                <!-- Client Application Box -->
+                <rect x="150" y="190" width="300" height="90" rx="5" />
+                <text x="300" y="220" font-weight="bold">MOBILE / WEB CLIENT</text>
+                <text x="300" y="240">APPLICATION [110]</text>
+                <text x="300" y="260" font-size="9pt" font-style="italic">(3D Bio-Twin & Voice Meal UI)</text>
+                
+                <!-- Application Server Box -->
+                <rect x="150" y="370" width="300" height="80" rx="5" />
+                <text x="300" y="400" font-weight="bold">APPLICATION SERVER [200]</text>
+                <text x="300" y="420" font-size="9pt" font-style="italic">(Next.js Server Actions)</text>
+
+                <!-- SQLite DB Box -->
+                <rect x="50" y="520" width="220" height="70" rx="5" />
+                <text x="160" y="550" font-weight="bold">BETTER-SQLITE3</text>
+                <text x="160" y="570">DATABASE [300]</text>
+
+                <!-- Neural Core Box -->
+                <rect x="330" y="520" width="220" height="70" rx="5" />
+                <text x="440" y="550" font-weight="bold">NEURAL CORE</text>
+                <text x="440" y="570">INTELLIGENCE ENG. [400]</text>
+
+                <!-- Arrows -->
+                <!-- User to Client -->
+                <line x1="300" y1="110" x2="300" y2="190" />
+                <path d="M 300,190 L 295,180 M 300,190 L 305,180" />
+                <text x="300" y="150" font-size="9pt" font-style="italic" text-anchor="middle">Interaction</text>
+                
+                <!-- Client to Server -->
+                <line x1="300" y1="280" x2="300" y2="370" />
+                <path d="M 300,370 L 295,360 M 300,370 L 305,360" />
+                <text x="300" y="325" font-size="9pt" font-style="italic" text-anchor="middle">API Requests</text>
+
+                <!-- Server to DB -->
+                <path d="M 250,450 L 160,520" />
+                <path d="M 160,520 L 170,515 M 160,520 L 165,528" />
+                <text x="180" y="480" font-size="9pt" font-style="italic">SQL</text>
+
+                <!-- Server to Neural Core -->
+                <path d="M 350,450 L 440,520" />
+                <path d="M 440,520 L 435,528 M 440,520 L 430,515" />
+                <text x="420" y="480" font-size="9pt" font-style="italic">Context</text>
+            </svg>
+        </div>
+        
+        <div class="footer">
+            <span class="title-text">FIGURE 1: SYSTEM BLOCK DIAGRAM</span>
+        </div>
+    </div>
+
+    <!-- PAGE 2: WORKFLOW DIAGRAM -->
+    <div class="page">
+        <div class="header">SHEET 2 OF 2</div>
+        
+        <div class="canvas-container">
+            <svg viewBox="0 0 600 700">
+                <!-- Phase 1 Boundary -->
+                <rect x="30" y="30" width="540" height="150" rx="10" stroke-dasharray="5,5" fill="none" />
+                <text x="60" y="50" font-weight="bold" font-size="10pt" text-anchor="start">PHASE 1: DIAGNOSTIC MAPPING</text>
+                <rect x="50" y="80" width="130" height="60" rx="5" />
+                <text x="115" y="110" font-size="9pt">User Onboarding</text>
+                <rect x="230" y="80" width="140" height="60" rx="5" />
+                <text x="300" y="110" font-size="9pt">Cinematic Assessment</text>
+                <rect x="420" y="80" width="130" height="60" rx="5" />
+                <text x="485" y="110" font-size="9pt">Local SQLite DB Log</text>
+
+                <!-- Phase 1 Arrows -->
+                <line x1="180" y1="110" x2="230" y2="110" />
+                <path d="M 230,110 L 222,106 M 230,110 L 222,114" />
+                <line x1="370" y1="110" x2="420" y2="110" />
+                <path d="M 420,110 L 412,106 M 420,110 L 412,114" />
+
+                <!-- Link Phase 1 to Phase 2 -->
+                <line x1="485" y1="140" x2="485" y2="210" />
+                <line x1="485" y1="210" x2="300" y2="210" />
+                <line x1="300" y1="210" x2="300" y2="230" />
+                <path d="M 300,230 L 296,222 M 300,230 L 304,222" />
+
+                <!-- Phase 2 Boundary -->
+                <rect x="30" y="220" width="540" height="150" rx="10" stroke-dasharray="5,5" fill="none" />
+                <text x="60" y="240" font-weight="bold" font-size="10pt" text-anchor="start">PHASE 2: INTELLIGENCE & TWIN GENERATION</text>
+                <rect x="80" y="270" width="180" height="60" rx="5" />
+                <text x="170" y="300" font-size="9pt">Metabolic Risk Evaluation</text>
+                <rect x="340" y="270" width="180" height="60" rx="5" />
+                <text x="430" y="300" font-size="9pt">3D Bio-Twin Dashboard</text>
+
+                <line x1="260" y1="300" x2="340" y2="300" />
+                <path d="M 340,300 L 332,296 M 340,300 L 332,304" />
+
+                <!-- Link Phase 2 to Phase 3 -->
+                <line x1="300" y1="330" x2="300" y2="385" />
+                <line x1="300" y1="385" x2="300" y2="400" />
+                <path d="M 300,400 L 296,392 M 300,400 L 304,392" />
+
+                <!-- Phase 3 Boundary -->
+                <rect x="30" y="390" width="540" height="170" rx="10" stroke-dasharray="5,5" fill="none" />
+                <text x="60" y="410" font-weight="bold" font-size="10pt" text-anchor="start">PHASE 3: TARGETED INTERVENTIONS</text>
+                <rect x="50" y="440" width="140" height="50" rx="5" />
+                <text x="120" y="465" font-size="9pt">Precision Nutrition</text>
+                <rect x="230" y="440" width="140" height="50" rx="5" />
+                <text x="300" y="465" font-size="9pt">Dynamic Workouts</text>
+                <rect x="410" y="440" width="140" height="50" rx="5" />
+                <text x="480" y="465" font-size="9pt">Zen Assist / Breath</text>
+
+                <!-- Feedback & Goal -->
+                <rect x="150" y="580" width="300" height="50" rx="5" />
+                <text x="300" y="605" font-weight="bold" font-size="10pt">GOAL: METABOLIC RISK REVERSED</text>
+
+                <!-- Connect Phase 3 to Goal -->
+                <line x1="120" y1="490" x2="120" y2="530" />
+                <line x1="300" y1="490" x2="300" y2="580" />
+                <path d="M 300,580 L 296,572 M 300,580 L 304,572" />
+                <line x1="480" y1="490" x2="480" y2="530" />
+                <line x1="120" y1="530" x2="480" y2="530" />
+                
+                <!-- Feedback loop line -->
+                <path d="M 450,605 L 560,605 L 560,110 L 550,110" />
+                <path d="M 550,110 L 558,106 M 550,110 L 558,114" />
+                <text x="540" y="360" font-size="8pt" font-style="italic" writing-mode="tb" text-anchor="middle">Continuous Feedback Loop & Wearable Sync</text>
+            </svg>
+        </div>
+        
+        <div class="footer">
+            <span class="title-text">FIGURE 2: PLATFORM WORKFLOW DIAGRAM</span>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -145,6 +145,7 @@ export const translations = {
     calculate_index: "Compute Index",
     habits_insight: "Health Progress Record",
     height: "Height",
+    telemetry: "Telemetry",
   },
   hi: {
     dashboard: "डैशबोर्ड",
@@ -292,6 +293,7 @@ export const translations = {
     calculate_index: "सूचकांक की गणना करें",
     habits_insight: "स्वास्थ्य प्रगति रिकॉर्ड",
     height: "लंबाई",
+    telemetry: "टेलीमेट्री",
   },
   ta: {
     dashboard: "முகப்பு",
@@ -439,6 +441,7 @@ export const translations = {
     calculate_index: "கணக்கீடு செய்",
     habits_insight: "சுகாதார முன்னேற்றப் பதிவு",
     height: "உயரம்",
+    telemetry: "தொலைக்கணிப்பு",
   }
 };
 

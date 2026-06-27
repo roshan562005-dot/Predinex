@@ -219,10 +219,10 @@ export default function AssessmentPage() {
                 {t("retake_quiz")}
               </button>
               <Link
-                href="/plans"
+                href="/dashboard"
                 className={`px-8 py-5 rounded-2xl bg-gradient-to-r ${risk.class} text-white font-black transition-all flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(0,0,0,0.1)] hover:scale-105 uppercase tracking-widest text-sm`}
               >
-                <Sparkles size={20} /> {t("view_action_plan")} <ArrowRight size={20} />
+                <Sparkles size={20} /> View AI BioTwin <ArrowRight size={20} />
               </Link>
             </motion.div>
           </div>

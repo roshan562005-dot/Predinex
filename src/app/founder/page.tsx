@@ -181,14 +181,9 @@ export default function FounderPage() {
               
               <div className="relative aspect-[3/4] max-w-md mx-auto lg:max-w-none rounded-[2.5rem] overflow-hidden border border-white/10 bg-gradient-to-b from-gray-800 to-gray-900 shadow-[0_40px_100px_rgba(0,0,0,0.5)] group">
                 <img
-                  /* Replace this with the exact filename if it is different */
-                  src="/founder.jpg" 
-                  alt="A. Roshan — Founder, Predinex"
-                  /* 
-                    CSS Enhancements:
-                    - object-cover & object-top with scale-[1.15] to crop it closer ("make it half")
-                    - saturate, contrast, and brightness to enhance the image quality ("4k resolution feel")
-                  */
+                  src="/images/roshan_founder.jpg" 
+                  alt="A. Roshan — Founder and CEO, Predinex Diabetes Prevention Platform"
+                  title="A. Roshan - Founder of Predinex"
                   className="w-full h-full object-cover object-top scale-[1.15] group-hover:scale-[1.2] transition-transform duration-700 saturate-[1.15] contrast-[1.1] brightness-[1.05]"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "/founder_4k_natural.png";

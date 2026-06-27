@@ -1,0 +1,17 @@
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+async function checkColumns() {
+  // We can force an insert of a dummy row, or just try to select blood_pressure
+  const { data, error } = await supabase.from('daily_habits').select('blood_pressure').limit(1);
+  if (error) {
+    console.error('Error fetching blood_pressure:', error.message);
+  } else {
+    console.log('Successfully selected blood_pressure! It exists.');
+  }
+}
+checkColumns();

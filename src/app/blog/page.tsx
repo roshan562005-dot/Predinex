@@ -33,7 +33,7 @@ export default function BlogPage() {
 
       <main className="pt-32 pb-24 px-6">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-500 mb-6">
               <BookOpen size={32} />
             </div>
@@ -41,8 +41,21 @@ export default function BlogPage() {
               The Predinex <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">Journal</span>
             </h1>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Clinical insights, research breakdowns, and actionable guides to help you reverse pre-diabetes naturally.
+              Clinical insights, research breakdowns, and actionable guides to help you manage pre-diabetes naturally.
             </p>
+          </div>
+
+          {/* Category Navigation */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-16">
+            {Array.from(new Set(blogPosts.flatMap(post => post.tags))).map(tag => (
+              <Link 
+                key={tag} 
+                href={`/blog/category/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-teal-500/30 text-sm font-bold text-gray-300 hover:text-teal-400 transition-all"
+              >
+                {tag}
+              </Link>
+            ))}
           </div>
 
           <div className="space-y-8">

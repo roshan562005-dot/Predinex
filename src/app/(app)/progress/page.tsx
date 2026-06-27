@@ -23,9 +23,10 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
-import { getHabitHistory, upsertHabits } from "@/app/(app)/actions";
+import { getHabitHistory, upsertHabits, getLatestAssessment } from "@/app/(app)/actions";
 import ProgressExportButton from "@/components/ProgressExportButton";
 import { useInclusivity } from "@/context/InclusivityContext";
+import MetabolicBioTwin from "@/components/dashboard/MetabolicBioTwin";
 
 const weightData = [
   { date: "Mar 1", weight: 185 },
@@ -51,6 +52,7 @@ export default function ProgressPage() {
   const [showLogModal, setShowLogModal] = useState(false);
   const [logType, setLogType] = useState<"bloodSugar" | "weight" | "water" | "steps">("bloodSugar");
   const [history, setHistory] = useState<any[]>([]);
+  const [assessmentScore, setAssessmentScore] = useState<number>(50);
   const [loading, setLoading] = useState(true);
   
   // Form State
@@ -60,15 +62,19 @@ export default function ProgressPage() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    async function loadHistory() {
+    async function loadData() {
       try {
-        const data = await getHabitHistory(30);
+        const [data, assessment] = await Promise.all([
+          getHabitHistory(30),
+          getLatestAssessment()
+        ]);
         setHistory(data);
+        if (assessment) setAssessmentScore(assessment.score);
       } finally {
         setLoading(false);
       }
     }
-    loadHistory();
+    loadData();
   }, []);
 
   const handleSave = async () => {
@@ -157,6 +163,16 @@ export default function ProgressPage() {
         </div>
         <ProgressExportButton history={history} />
       </div>
+
+      {/* Metabolic Bio-Twin Hero Section */}
+      <motion.div 
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="w-full mb-12"
+      >
+        <MetabolicBioTwin score={assessmentScore} habits={todayHabits} />
+      </motion.div>
 
       {/* Tabs */}
       <div className="flex space-x-2 border-b border-gray-200 dark:border-gray-800 overflow-x-auto hide-scrollbar pb-px">

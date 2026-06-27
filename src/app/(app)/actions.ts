@@ -87,6 +87,12 @@ export async function updateUserProfile(data: any) {
 
 /** Check if user is premium */
 export async function getPremiumStatus(): Promise<boolean> {
+  // Free access for 2 months from 2026-06-13
+  const freeAccessEndDate = new Date('2026-08-13T00:00:00Z');
+  if (new Date() < freeAccessEndDate) {
+    return true;
+  }
+
   const session = await auth();
   if (!session?.user?.id) return false;
   const { getUserById } = require('@/lib/db-queries');

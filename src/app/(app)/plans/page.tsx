@@ -4,7 +4,7 @@ import React, { useState, useTransition, useEffect } from "react";
 import { UtensilsCrossed, Clock, Flame, Calendar, CheckCircle2, ChevronRight, Sparkles, Activity, Droplets, Moon, Sun, Plus, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { upsertHabits, getDailyHabits, getLatestAssessment, getPremiumStatus } from "@/app/(app)/actions";
-import { dietData, Recipe } from "./dietData";
+import { generateDietPlan, Recipe } from "./dietData";
 import MealAnalyzer from "@/components/MealAnalyzer";
 import { PaywallOverlay } from "@/components/PaywallOverlay";
 
@@ -17,16 +17,22 @@ export default function PlansPage() {
   const [sunDone, setSunDone] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isPremium, setIsPremium] = useState(false);
+  const [region, setRegion] = useState<string | null>(null);
   const [, startTransition] = useTransition();
 
   const [selectedDay, setSelectedDay] = useState(1); // Start on day 1
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [dietPreference, setDietPreference] = useState<'omnivore' | 'vegetarian'>('omnivore');
-  const currentPlan = dietData[selectedDay - 1] || dietData[0];
+  
+  const planData = generateDietPlan(region || 'global');
+  const currentPlan = planData[selectedDay - 1] || planData[0];
 
   useEffect(() => {
     async function loadData() {
       try {
+        const storedRegion = localStorage.getItem('predinex_diet_region');
+        if (storedRegion) setRegion(storedRegion);
+
         const [habits, _, premium] = await Promise.all([
           getDailyHabits(),
           getLatestAssessment(),
@@ -129,7 +135,7 @@ export default function PlansPage() {
         {!isPremium && <PaywallOverlay />}
         
         {/* Nutrition Meal Analyzer */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className={`relative z-10 ${!isPremium ? 'opacity-30 pointer-events-none select-none blur-sm' : ''}`}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className={`relative z-50 ${!isPremium ? 'opacity-30 pointer-events-none select-none blur-sm' : ''}`}>
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="text-violet-500" size={20} />
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">Nutrition Meal Analyser</h2>
@@ -144,10 +150,20 @@ export default function PlansPage() {
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-4xl font-black tracking-tight text-gray-900 dark:text-white flex items-center gap-3">
-            <UtensilsCrossed className="text-emerald-500" size={32} strokeWidth={2.5} /> {t("diet_protocol") || "Daily Nutrition Protocol"}
-          </h1>
-          <p className="text-gray-500 font-medium mt-2">{t("personalized_for_you") || "Personalized for your metabolic goals."}</p>
+            <div className="flex items-center gap-3">
+              <h1 className="text-4xl font-black tracking-tight text-gray-900 dark:text-white flex items-center gap-3">
+                <UtensilsCrossed className="text-emerald-500" size={32} strokeWidth={2.5} /> {t("diet_protocol") || "Daily Nutrition Protocol"}
+              </h1>
+              {region && (
+                <button 
+                  onClick={() => setRegion(null)}
+                  className="bg-white/5 hover:bg-white/10 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white border border-gray-200 dark:border-white/10 px-3 py-1.5 rounded-full text-xs font-bold transition-all"
+                >
+                  Change Region
+                </button>
+              )}
+            </div>
+            <p className="text-gray-500 font-medium mt-2">{t("personalized_for_you") || "Personalized for your metabolic goals."}</p>
           </div>
           <div className="text-sm font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-500/10 border border-primary-100 dark:border-primary-500/20 px-4 py-2 rounded-xl backdrop-blur-md shadow-sm">
              Week {Math.ceil(selectedDay / 7)} • Day {selectedDay}
@@ -504,6 +520,63 @@ export default function PlansPage() {
         )}
       </AnimatePresence>
       </div>
+
+      {/* Region Wizard Popup */}
+      <AnimatePresence>
+        {!loading && !region && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-gray-900/90 dark:bg-black/90 backdrop-blur-xl"
+            ></motion.div>
+            <motion.div 
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white dark:bg-[#0c0f16] border border-gray-200/50 dark:border-white/10 rounded-[2.5rem] shadow-2xl w-full max-w-2xl relative z-10 overflow-hidden"
+            >
+              <div className="p-8 sm:p-12 text-center">
+                <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/20">
+                  <Sparkles size={40} />
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 dark:text-white mb-4">
+                  Personalize Your Protocol
+                </h2>
+                <p className="text-gray-500 dark:text-gray-400 font-medium text-lg max-w-lg mx-auto mb-10">
+                  Select your cultural preference to receive clinically-tailored, pre-diabetes friendly meals that feel like home.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {[
+                    { id: 'global', name: 'Global', desc: 'Mediterranean & Western clinical cuisine', icon: '🌍' },
+                    { id: 'north_indian', name: 'North Indian', desc: 'Low-GI Rotis, Paneer & Rich Dals', icon: '🍲' },
+                    { id: 'south_indian', name: 'South Indian', desc: 'Millets, Coastal Fish & Fermented Foods', icon: '🥥' }
+                  ].map((option) => (
+                    <motion.button
+                      whileHover={{ scale: 1.03, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      key={option.id}
+                      onClick={() => {
+                        localStorage.setItem('predinex_diet_region', option.id);
+                        setRegion(option.id);
+                        setSelectedDay(1); // Reset to day 1 on change
+                      }}
+                      className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-emerald-500 dark:hover:border-emerald-500 p-6 rounded-3xl text-center group transition-all"
+                    >
+                      <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{option.icon}</div>
+                      <h3 className="font-bold text-gray-900 dark:text-white mb-2">{option.name}</h3>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{option.desc}</p>
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

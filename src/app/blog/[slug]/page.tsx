@@ -39,8 +39,29 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
+  const relatedPosts = blogPosts
+    .filter((p) => p.slug !== post.slug && p.tags.some((tag) => post.tags.includes(tag)))
+    .slice(0, 2);
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.description,
+    author: {
+      '@type': 'Person',
+      name: post.author,
+    },
+    datePublished: post.date,
+    url: `https://predinex.com/blog/${post.slug}`,
+  };
+
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-teal-500/30">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <header className="fixed top-0 w-full z-50 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/" className="hover:opacity-80 transition-opacity">
@@ -85,10 +106,26 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           <hr className="my-12 border-white/10" />
 
+          {relatedPosts.length > 0 && (
+            <div className="mb-12">
+              <h3 className="text-2xl font-bold mb-6">Related Articles</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {relatedPosts.map((rp) => (
+                  <Link key={rp.slug} href={`/blog/${rp.slug}`}>
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all group">
+                      <h4 className="font-bold text-lg mb-2 group-hover:text-teal-400 transition-colors">{rp.title}</h4>
+                      <p className="text-sm text-gray-400 line-clamp-2">{rp.description}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="bg-gradient-to-br from-teal-900/20 to-emerald-900/20 border border-teal-500/20 rounded-[2rem] p-8 text-center">
             <h3 className="text-2xl font-black mb-4">Ready to take control of your metabolic health?</h3>
             <p className="text-gray-400 mb-8 max-w-lg mx-auto">
-              Join Predinex today to track your exact glucose response, get personalized lifestyle plans, and reverse pre-diabetes naturally.
+              Join Predinex today to track your exact glucose response, get personalized lifestyle plans, and manage pre-diabetes naturally.
             </p>
             <Link href="/register" className="inline-block px-8 py-4 bg-white text-black font-black rounded-xl hover:scale-105 transition-transform shadow-xl shadow-white/10">
               Start Your Free Trial

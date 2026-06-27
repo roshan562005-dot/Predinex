@@ -16,8 +16,8 @@ import {
   HeartPulse,
   Dumbbell,
   ShieldCheck,
-  Stethoscope
-} from "lucide-react";
+  Stethoscope,
+  Binary
 import { useRef } from "react";
 
 const stats = [
@@ -104,7 +104,8 @@ export default function LandingPage() {
             <a href="#features" className="hover:text-emerald-400 transition-colors">Clinical Features</a>
             <a href="#how-it-works" className="hover:text-emerald-400 transition-colors">How It Works</a>
             <Link href="/founder" className="hover:text-emerald-400 transition-colors">Our Founder</Link>
-            <Link href="/blog" className="hover:text-emerald-400 transition-colors">Blog</Link>
+            <Link href="/blog" className="hover:text-emerald-400 transition-colors">Journal</Link>
+            <Link href="/tools" className="hover:text-emerald-400 transition-colors text-emerald-500 font-bold">Free Tools</Link>
           </div>
 
           <div className="flex items-center gap-4">
@@ -125,8 +126,11 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative pt-40 pb-20 md:pt-48 md:pb-32 overflow-hidden flex flex-col items-center justify-center min-h-[90vh]">
         
+        {/* Animated Grid Background */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30"></div>
+
         {/* Glow Orbs */}
-        <motion.div style={{ y: yBackground }} className="absolute top-1/4 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-emerald-500/20 rounded-full blur-[120px] pointer-events-none"></motion.div>
+        <motion.div style={{ y: yBackground }} className="absolute top-1/4 left-1/4 -translate-x-1/2 w-[600px] h-[600px] bg-emerald-500/20 rounded-full blur-[120px] pointer-events-none animate-pulse"></motion.div>
         <motion.div style={{ y: yBackground }} className="absolute bottom-0 right-1/4 translate-x-1/4 w-[500px] h-[500px] bg-teal-500/10 rounded-full blur-[100px] pointer-events-none"></motion.div>
 
         <div className="max-w-7xl mx-auto px-6 text-center relative z-10 w-full">
@@ -169,17 +173,19 @@ export default function LandingPage() {
               Predinex is a secure, patient-centred metabolic health tracking platform designed to reverse pre-diabetes through evidence-based lifestyle interventions and personalised clinical guidance.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center relative">
+              <div className="absolute inset-0 bg-emerald-500/30 blur-2xl rounded-full w-3/4 mx-auto animate-pulse pointer-events-none"></div>
               <Link
                 href="/login"
-                className="group flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-black px-8 py-4 rounded-2xl font-black text-lg hover:scale-105 transition-all shadow-[0_0_30px_rgba(16,185,129,0.4)] w-full sm:w-auto"
+                className="group relative flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 bg-[length:200%_auto] text-black px-10 py-5 rounded-2xl font-black text-xl hover:scale-[1.03] active:scale-95 transition-all shadow-[0_0_40px_rgba(16,185,129,0.5)] w-full sm:w-auto overflow-hidden"
               >
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
                 Begin My Health Journey
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                <ArrowRight size={22} className="group-hover:translate-x-1.5 transition-transform" />
               </Link>
             </div>
             
-            <p className="text-gray-500 text-sm font-semibold mt-6 flex items-center justify-center gap-2">
+            <p className="text-gray-500 text-sm font-semibold mt-8 flex items-center justify-center gap-2">
               <ShieldCheck size={16} className="text-teal-500" />
               Private & Secure · Your Data Never Leaves Your Device
             </p>
@@ -280,7 +286,138 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Telemetry Showcase */}
+      <section className="py-24 relative overflow-hidden bg-[#050505]">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-teal-500/30 bg-teal-500/10 text-teal-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+                <Binary size={12} className="animate-pulse" />
+                Live Telemetry AI
+              </div>
+              <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-6">
+                The World's First <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500">Metabolic BioTwin.</span>
+              </h2>
+              <p className="text-gray-400 text-lg leading-relaxed mb-8">
+                Connect your wearable devices to the Predinex AI engine. Our proprietary <strong>Zero Error Protocol</strong> monitors your Heart Rate Variability, Glucose Variance, and Cortisol proxies in real-time. 
+              </p>
+              <ul className="space-y-4 mb-10">
+                {[
+                  "Predicts metabolic shock before it happens",
+                  "AES-256 E2E encrypted data streams",
+                  "Personalized AI health forecasts"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-gray-300 font-medium text-sm">
+                    <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shrink-0">
+                      <Check size={12} className="text-emerald-400" />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link href="/telemetry" className="inline-flex items-center gap-2 text-teal-400 font-bold hover:text-teal-300 transition-colors group">
+                Explore Telemetry Dashboard <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </motion.div>
 
+            {/* Visual representation */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative"
+            >
+              <div className="absolute inset-0 bg-teal-500/20 blur-[100px] rounded-full"></div>
+              <div className="relative bg-[#0a0f1a]/80 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden aspect-square flex flex-col justify-between max-h-[500px]">
+                 <div className="absolute top-0 right-0 p-8 flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-teal-400">Stream Live</span>
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-teal-500"></span>
+                    </span>
+                 </div>
+                 
+                 <div className="flex-1 flex items-center justify-center relative">
+                    <div className="absolute inset-0 border border-teal-500/10 rounded-full w-48 h-48 m-auto animate-[spin_10s_linear_infinite]"></div>
+                    <div className="absolute inset-0 border border-blue-500/10 rounded-full w-32 h-32 m-auto animate-[spin_15s_linear_infinite_reverse]"></div>
+                    <Activity className="text-teal-400 w-16 h-16 animate-pulse drop-shadow-[0_0_15px_rgba(45,212,191,0.5)]" />
+                 </div>
+
+                 <div className="bg-black/50 backdrop-blur-md rounded-2xl p-5 border border-white/5">
+                    <div className="flex justify-between items-center mb-3">
+                       <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">HRV Index</span>
+                       <span className="text-[10px] font-black uppercase tracking-widest text-teal-400 bg-teal-500/10 px-2 py-1 rounded">Optimal</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                       <span className="text-3xl font-black text-white tracking-tighter">62.2<span className="text-sm font-bold text-gray-500 ml-1">ms</span></span>
+                       <div className="h-6 w-16 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-teal-500/20 rounded border border-teal-500/30 opacity-70"></div>
+                    </div>
+                 </div>
+              </div>
+            </motion.div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* AI Image Gallery - SEO Optimized */}
+      <section className="py-24 relative overflow-hidden bg-[#030303] border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-4">
+              Visualizing Metabolic Health
+            </h2>
+            <p className="text-gray-400 font-medium max-w-2xl mx-auto text-lg">
+              Explore our state-of-the-art AI imagery depicting diabetes reversal, precision diets, and glucose tracking technologies.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="group overflow-hidden rounded-[2rem] border border-white/10 relative bg-black aspect-square shadow-2xl">
+              <img 
+                src="/images/seo/diabetes-reversal.png" 
+                alt="High quality cinematic medical dashboard showing diabetes reversal progress and pre-diabetes clinical management" 
+                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
+                <h3 className="text-white font-black text-2xl tracking-tight">Diabetes Reversal</h3>
+                <p className="text-emerald-400 font-semibold mt-1">Clinical Analytics</p>
+              </div>
+            </div>
+            
+            <div className="group overflow-hidden rounded-[2rem] border border-white/10 relative bg-black aspect-square shadow-2xl md:-translate-y-8">
+              <img 
+                src="/images/seo/metabolic-health-ai.png" 
+                alt="Futuristic AI core analyzing human metabolic health and glucose monitoring data for diabetes prevention" 
+                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
+                <h3 className="text-white font-black text-2xl tracking-tight">AI Tracking</h3>
+                <p className="text-emerald-400 font-semibold mt-1">Metabolic Health</p>
+              </div>
+            </div>
+            
+            <div className="group overflow-hidden rounded-[2rem] border border-white/10 relative bg-black aspect-square shadow-2xl">
+              <img 
+                src="/images/seo/clinical-diabetes-diet.png" 
+                alt="Beautiful fresh healthy metabolic diet plate for diabetes management with avocado and wild salmon" 
+                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" 
+              />
+              <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent">
+                <h3 className="text-white font-black text-2xl tracking-tight">Clinical Diet</h3>
+                <p className="text-emerald-400 font-semibold mt-1">Nutrition Optimization</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       {/* CTA */}
       <section className="py-40 relative overflow-hidden">
         <div className="absolute inset-0 bg-emerald-900/20 pointer-events-none"></div>

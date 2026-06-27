@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Activity, Droplets, Binary, Orbit } from "lucide-react";
+import { Activity, Droplets, Binary, Orbit, Sparkles } from "lucide-react";
 import { useInclusivity } from "@/context/InclusivityContext";
 import { useMotionValue, useSpring, useTransform } from "framer-motion";
 
@@ -15,34 +15,67 @@ export default function MetabolicBioTwin({ score, habits }: MetabolicBioTwinProp
   const { t } = useInclusivity();
   const [isHovered, setIsHovered] = useState(false);
   const [predictionMode, setPredictionMode] = useState(false);
+  const [aiInsight, setAiInsight] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const completionRate = habits
     ? ((habits.water_ml ? 1 : 0) + (habits.sleep_hours ? 1 : 0) + (habits.sunlight_mins ? 1 : 0)) / 3
     : 0.5;
 
   // ── Real metabolic metrics computed from actual logged data ──
+  // Normalize score assuming it might be out of 100 instead of 10
+  const normalizedScore = score > 10 ? score / 10 : score;
+
   // Insulin Sensitivity: based on blood sugar (ideal < 100 mg/dL fasting)
-  const insulinScore = habits?.blood_sugar
+  const rawInsulin = habits?.blood_sugar
     ? Math.max(10, Math.round(100 - Math.max(0, habits.blood_sugar - 90) * 0.7))
-    : Math.round(60 + (score / 10) * 30);
+    : Math.round(60 + normalizedScore * 3);
+  const insulinScore = Math.min(100, rawInsulin);
 
   // Glucose Regulation: based on assessment score + blood sugar trend
-  const glucoseScore = habits?.blood_sugar
+  const rawGlucose = habits?.blood_sugar
     ? Math.max(10, Math.round(100 - Math.max(0, habits.blood_sugar - 85) * 0.8))
-    : Math.round(55 + (score / 10) * 35);
+    : Math.round(55 + normalizedScore * 3.5);
+  const glucoseScore = Math.min(100, rawGlucose);
 
   // Energy / Lifestyle Score: sleep + water + sunlight contribution
-  const energyScore = Math.round(
+  const rawEnergy = Math.round(
     ((habits?.sleep_hours ?? 0) / 8) * 40 +
     ((habits?.water_ml ?? 0) / 2500) * 30 +
     ((habits?.sunlight_mins ?? 0) / 20) * 20 +
-    (score / 10) * 10
+    normalizedScore * 1
   );
+  const energyScore = Math.min(100, rawEnergy);
 
   // Forecast: what scores could look like if programme is fully adhered to
   const forecastInsulin = Math.min(99, insulinScore + 14);
   const forecastGlucose = Math.min(99, glucoseScore + 18);
   const forecastEnergy  = Math.min(99, energyScore  + 8);
+
+  useEffect(() => {
+    async function fetchInsight() {
+      setIsGenerating(true);
+      try {
+        const res = await fetch("/api/ai/insights", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            insulinScore,
+            glucoseScore,
+            energyScore,
+            sleep: habits?.sleep_hours || 0,
+            water: habits?.water_ml || 0
+          })
+        });
+        const data = await res.json();
+        setAiInsight(data.insight);
+      } catch (e) {
+        setAiInsight("AI Engine offline.");
+      }
+      setIsGenerating(false);
+    }
+    fetchInsight();
+  }, [insulinScore, glucoseScore, energyScore, habits]);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -197,22 +230,67 @@ export default function MetabolicBioTwin({ score, habits }: MetabolicBioTwinProp
 
           <div className="grid grid-cols-3 gap-4">
             {[
-              { label: "Insulin",  val: predictionMode ? forecastInsulin : insulinScore, icon: <Droplets size={15} />, color: "from-blue-500 to-indigo-600",   accent: "text-blue-400"   },
-              { label: "Glucose",  val: predictionMode ? forecastGlucose : glucoseScore, icon: <Activity size={15} />, color: "from-emerald-400 to-teal-600", accent: "text-emerald-400" },
-              { label: "Energy",   val: predictionMode ? forecastEnergy  : energyScore,  icon: <Binary size={15} />,   color: "from-violet-500 to-purple-600", accent: "text-violet-400"  },
-            ].map((metric, i) => (
+              { label: "Insulin Sensitivity",  val: predictionMode ? forecastInsulin : insulinScore, icon: <Droplets size={15} />, color: "from-blue-500 to-indigo-600",   accent: "text-blue-400"   },
+              { label: "Glucose Stability",  val: predictionMode ? forecastGlucose : glucoseScore, icon: <Activity size={15} />, color: "from-emerald-400 to-teal-600", accent: "text-emerald-400" },
+              { label: "Lifestyle Score",   val: predictionMode ? forecastEnergy  : energyScore,  icon: <Binary size={15} />,   color: "from-violet-500 to-purple-600", accent: "text-violet-400"  },
+            ].map((metric, i) => {
+              const status = metric.val >= 80 ? "Optimal" : metric.val >= 60 ? "Good" : metric.val >= 40 ? "Fair" : "At Risk";
+              const statusColor = metric.val >= 80 ? "text-emerald-400" : metric.val >= 60 ? "text-blue-400" : metric.val >= 40 ? "text-amber-400" : "text-rose-400";
+              
+              return (
               <div
                 key={i}
-                className="flex flex-col items-center p-4 rounded-[1.75rem] bg-white/5 border border-white/5 relative overflow-hidden group/item"
+                className="flex flex-col items-center p-3 rounded-[1.75rem] bg-white/5 border border-white/5 relative overflow-hidden group/item text-center justify-center"
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${metric.color} opacity-0 group-hover/item:opacity-8 transition-opacity duration-500`} />
-                <div className={`${metric.accent} mb-2.5 group-hover/item:scale-110 transition-transform duration-500`}>
+                <div className={`${metric.accent} mb-1.5 group-hover/item:scale-110 transition-transform duration-500`}>
                   {metric.icon}
                 </div>
-                <span className="text-xl font-black text-white tracking-widest">{metric.val}%</span>
-                <span className="text-[8px] text-gray-500 font-black uppercase tracking-[0.2em] mt-1">{metric.label}</span>
+                <span className="text-xl font-black text-white tracking-widest leading-none">{metric.val}%</span>
+                <span className={`text-[9px] font-black uppercase tracking-widest mt-1.5 ${statusColor}`}>{status}</span>
+                <span className="text-[7.5px] text-gray-400 font-bold uppercase tracking-[0.1em] mt-1 leading-tight">{metric.label}</span>
               </div>
-            ))}
+              );
+            })}
+          </div>
+
+          {/* Reference Legend */}
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 mt-6 pt-5 border-t border-white/5">
+             <div className="flex items-center gap-1.5">
+               <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
+               <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.1em]">Optimal (80%+)</span>
+             </div>
+             <div className="flex items-center gap-1.5">
+               <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)]"></div>
+               <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.1em]">Good (60-79%)</span>
+             </div>
+             <div className="flex items-center gap-1.5">
+               <div className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]"></div>
+               <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.1em]">Fair (40-59%)</span>
+             </div>
+             <div className="flex items-center gap-1.5">
+               <div className="w-1.5 h-1.5 rounded-full bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.8)]"></div>
+               <span className="text-[8px] font-black text-gray-400 uppercase tracking-[0.1em]">At Risk (&lt;40%)</span>
+             </div>
+          </div>
+        </div>
+
+        {/* AI Insight Box */}
+        <div className="relative z-30 w-full max-w-lg mt-4 bg-emerald-950/40 backdrop-blur-3xl border border-emerald-500/20 rounded-[1.5rem] p-5 shadow-lg [transform:translateZ(100px)]">
+          <div className="flex items-start gap-4">
+            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+              <Sparkles size={14} className="text-emerald-400" />
+            </div>
+            <div className="flex-1">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 mb-1">Predinex AI Engine</h4>
+              {isGenerating ? (
+                <div className="h-4 w-3/4 bg-white/10 rounded animate-pulse mt-1" />
+              ) : (
+                <p className="text-[11px] font-medium text-emerald-50/90 leading-relaxed">
+                  {aiInsight}
+                </p>
+              )}
+            </div>
           </div>
         </div>
 

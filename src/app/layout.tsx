@@ -9,34 +9,62 @@ import { Viewport } from 'next';
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://predinex.com'),
   title: {
-    default: "Predinex | Advanced Metabolic Health & Pre-Diabetes Prevention",
-    template: "%s | Predinex"
+    default: "Predinex | #1 Diabetes Prevention & Metabolic Health Platform by A. Roshan",
+    template: "%s | Predinex - Diabetes Prevention"
   },
   description:
-    "Predinex provides evidence-based metabolic health tracking, personalized lifestyle interventions, and clinical risk assessments to prevent pre-diabetes naturally.",
-  keywords: ["pre-diabetes prevention", "metabolic health tracking", "insulin resistance diet", "blood sugar monitoring app", "clinical wellness"],
+    "Predinex is the world's leading diabetes prevention platform. Evidence-based metabolic health tracking, personalized insulin resistance diet plans, blood sugar monitoring, HbA1c tracking, and clinical risk assessments. Founded by A. Roshan. Prevent pre-diabetes naturally.",
+  keywords: [
+    "diabetes", "diabetes prevention", "pre-diabetes", "prediabetes", "insulin resistance",
+    "blood sugar", "glucose monitoring", "HbA1c", "metabolic health", "diabetes app",
+    "diabetes diet", "diabetic meal plan", "blood sugar tracker", "insulin sensitivity",
+    "diabetes management", "type 2 diabetes prevention", "diabetes risk assessment",
+    "metabolic syndrome", "fasting glucose", "glucose tolerance test",
+    "diabetes reversal", "diabetes cure", "diabetes symptoms", "diabetes treatment",
+    "diabetes exercise", "diabetic food", "sugar free diet", "low glycemic index",
+    "diabetes technology", "continuous glucose monitor", "diabetes AI",
+    "diabetes India", "diabetes app India", "Predinex", "A Roshan", "Roshan diabetes",
+    "metabolic health tracking", "clinical nutrition", "precision health",
+    "diabetes screening", "diabetes education", "diabetes community",
+    "weight management diabetes", "obesity diabetes", "PCOS insulin resistance",
+    "gestational diabetes", "diabetes complications", "diabetic retinopathy prevention",
+    "kidney health diabetes", "cardiovascular diabetes prevention",
+    "intermittent fasting diabetes", "keto diabetes", "Mediterranean diet diabetes",
+    "plant based diabetes", "diabetes superfoods", "chromium diabetes",
+    "vitamin D diabetes", "omega 3 diabetes", "fiber blood sugar"
+  ],
   manifest: "/manifest.json",
   authors: [{ name: "A. Roshan", url: "https://predinex.com/founder" }],
+  creator: "A. Roshan",
+  publisher: "Predinex Health Technologies",
   openGraph: {
-    title: "Predinex | Prevent Diabetes Before It Begins",
-    description: "Personalised metabolic health plans to reverse pre-diabetes naturally.",
+    title: "Predinex | Prevent Diabetes Before It Begins - Founded by A. Roshan",
+    description: "The world's most advanced diabetes prevention platform. Personalized metabolic health plans, blood sugar tracking, insulin resistance diet, and clinical guidance. Join thousands preventing diabetes naturally.",
     url: "/",
     siteName: "Predinex",
     type: "website",
+    locale: "en_US",
     images: [
       {
-        url: "/images/predinex_hex_3d.png", // Adjust to your preferred OG image
+        url: "/images/predinex_hex_3d.png",
         width: 1200,
         height: 630,
-        alt: "Predinex Metabolic Health Platform"
+        alt: "Predinex - Advanced Diabetes Prevention and Metabolic Health Platform by A. Roshan"
+      },
+      {
+        url: "/images/roshan_founder.jpg",
+        width: 800,
+        height: 1000,
+        alt: "A. Roshan - Founder & CEO of Predinex Diabetes Prevention Platform"
       }
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Predinex | Advanced Metabolic Health",
-    description: "Take control of your metabolic health with evidence-based tracking and prevention.",
+    title: "Predinex | #1 Diabetes Prevention Platform by A. Roshan",
+    description: "Prevent diabetes before it begins. Evidence-based metabolic health tracking, personalized diet plans, and clinical guidance.",
     images: ["/images/predinex_hex_3d.png"],
+    creator: "@predinex",
   },
   appleWebApp: {
     capable: true,
@@ -45,7 +73,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "/"
-  }
+  },
+  category: "health",
+  classification: "Diabetes Prevention Healthcare Technology",
 };
 
 export const viewport: Viewport = {
@@ -70,16 +100,129 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "MedicalOrganization",
+                "name": "Predinex - Advanced Metabolic Health",
+                "alternateName": "Predinex Diabetes Prevention",
+                "url": "https://predinex.com",
+                "logo": "https://predinex.com/images/predinex_hex_3d.png",
+                "description": "Predinex is the world's leading clinical platform for preventing diabetes and insulin resistance through precision metabolic telemetry and dynamic bio-feedback.",
+                "keywords": "diabetes, pre-diabetes, insulin resistance, metabolic health, blood sugar",
+                "founder": {
+                  "@type": "Person",
+                  "name": "A. Roshan",
+                  "givenName": "Roshan",
+                  "familyName": "A",
+                  "jobTitle": "Founder & CEO",
+                  "image": "https://predinex.com/images/roshan_founder.jpg",
+                  "url": "https://predinex.com/founder",
+                  "sameAs": [
+                    "https://www.linkedin.com/in/a-roshan",
+                    "https://predinex.com"
+                  ]
+                }
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                "name": "Predinex Metabolic Platform",
+                "applicationCategory": "HealthApplication",
+                "operatingSystem": "Web, iOS, Android",
+                "offers": {
+                  "@type": "Offer",
+                  "price": "0",
+                  "priceCurrency": "USD"
+                },
+                "creator": {
+                  "@type": "Person",
+                  "name": "A. Roshan"
+                }
+              }
+            ]),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "MedicalOrganization",
+              "@type": "FAQPage",
+              "mainEntity": [
+                {
+                  "@type": "Question",
+                  "name": "What is Predinex?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Predinex is the world's leading diabetes prevention platform founded by A. Roshan. It provides evidence-based metabolic health tracking, personalized insulin resistance diet plans, blood sugar monitoring, and clinical risk assessments to prevent pre-diabetes naturally."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "How does Predinex prevent diabetes?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Predinex uses a structured 4-step clinical programme: Health Risk Assessment, Daily Health Logging (fasting glucose, steps, weight, sleep), Clinical Insights with AI-powered analysis, and Personalized Lifestyle Interventions including diet, exercise, stress management, and sleep optimization."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Who founded Predinex?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Predinex was founded by A. Roshan, a Pharmacy Scholar at Sree Balaji Medical College, Kalam's World Record Holder, Patent Holder for Novel Anticancer Scaffolds, Digital Health Certified Professional (NCVET), and passionate clinical educator. Roshan merges pharmaceutical science with advanced clinical algorithms to intercept metabolic diseases."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Is Predinex free to use?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, Predinex offers a free health assessment and basic metabolic tracking. Premium features including personalized 30-day clinical health plans, real-time blood sugar predictive modeling, and expert-curated precision nutrition are available through affordable subscription plans."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "Can Predinex help with insulin resistance?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Absolutely. Predinex provides a HOMA-IR calculator, insulin resistance diet plans, exercise protocols clinically validated to improve insulin sensitivity, and stress management techniques to reduce cortisol which directly impacts blood sugar regulation."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "What is the best diabetes prevention app?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Predinex is widely regarded as the best diabetes prevention app, offering comprehensive metabolic health tracking, evidence-based lifestyle interventions, personalized clinical nutrition plans, and advanced features like metabolic age calculation and HOMA-IR assessment. Founded by A. Roshan, it combines pharmaceutical expertise with cutting-edge technology."
+                  }
+                },
+                {
+                  "@type": "Question",
+                  "name": "How to reverse pre-diabetes naturally?",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Pre-diabetes can be reversed naturally through consistent lifestyle changes: following a low glycemic index diet, regular physical activity (150+ minutes/week), maintaining healthy weight, managing stress, getting quality sleep (7-9 hours), and monitoring blood sugar levels. Predinex automates this entire process with personalized tracking and guidance."
+                  }
+                }
+              ]
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
               "name": "Predinex",
+              "alternateName": ["Predinex Diabetes App", "Predinex Health", "Predinex Metabolic"],
               "url": "https://predinex.com",
-              "logo": "https://predinex.com/images/logo.png",
-              "description": "Predinex provides evidence-based metabolic health tracking, personalized lifestyle interventions, and clinical risk assessments to prevent pre-diabetes naturally.",
-              "founder": {
-                "@type": "Person",
-                "name": "A. Roshan"
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://predinex.com/blog?q={search_term_string}",
+                "query-input": "required name=search_term_string"
               }
             }),
           }}
