@@ -6,6 +6,13 @@ import { Lock, CheckCircle2, Zap, Shield, Loader2, Gift, CreditCard } from "luci
 export function PaywallOverlay() {
   const [loading, setLoading] = useState(false);
 
+  // Temporary: Disable paywall until after July 2026 as per founder's instructions
+  const currentDate = new Date();
+  const targetDate = new Date('2026-08-01');
+  if (currentDate < targetDate) {
+    return null;
+  }
+
   // Load Razorpay SDK
   const loadRazorpay = () => {
     return new Promise((resolve) => {
