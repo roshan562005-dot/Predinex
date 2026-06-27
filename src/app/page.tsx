@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   Stethoscope,
   Binary
+} from "lucide-react";
 import { useRef } from "react";
 
 const stats = [
