@@ -16,6 +16,7 @@ import {
   Lightbulb,
   Quote,
   Linkedin,
+  Instagram,
   Mail,
   ChevronRight,
   Dna,
@@ -274,6 +275,17 @@ export default function FounderPage() {
                   <Linkedin size={18} />
                   Connect
                 </a>
+
+                {/* Instagram Button */}
+                <a
+                  href="https://www.instagram.com/its_roshanahmed"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#833AB4]/10 via-[#FD1D1D]/10 to-[#F77737]/10 border border-[#E1306C]/30 hover:border-[#E1306C]/50 transition-all text-sm font-bold text-[#E1306C] shadow-[0_0_20px_rgba(225,48,108,0.1)] hover:shadow-[0_0_30px_rgba(225,48,108,0.2)]"
+                >
+                  <Instagram size={18} />
+                  @its_roshanahmed
+                </a>
               </div>
             </motion.div>
           </div>
@@ -503,6 +515,11 @@ export default function FounderPage() {
                 {/* Contact & Support */}
                 <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mt-10 mb-6" />
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                  <a href="https://www.instagram.com/its_roshanahmed" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-white/5 transition-colors group">
+                    <Instagram className="w-4 h-4 text-gray-500 group-hover:text-[#E1306C] transition-colors" />
+                    <span className="text-sm font-semibold text-gray-400 group-hover:text-white transition-colors">@its_roshanahmed</span>
+                  </a>
+                  <div className="w-1 h-1 rounded-full bg-white/20 hidden sm:block" />
                   <a href="mailto:predinexsupport@gmail.com" className="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-white/5 transition-colors group">
                     <Mail className="w-4 h-4 text-gray-500 group-hover:text-emerald-400 transition-colors" />
                     <span className="text-sm font-semibold text-gray-400 group-hover:text-white transition-colors">predinexsupport@gmail.com</span>
