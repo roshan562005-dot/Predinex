@@ -23,7 +23,7 @@ export default function TelemetryDashboard() {
   const [isSyncing, setIsSyncing] = useState(true);
   const [dataStream, setDataStream] = useState<any[]>([]);
   const [connectionQuality, setConnectionQuality] = useState(99.9);
-  const [simulationMode, setSimulationMode] = useState<'normal' | 'spike' | 'fasting'>('normal');
+  const [simulationMode, setSimulationMode] = useState<'normal' | 'spike' | 'fasting' | 'phone_sensors'>('normal');
   
   // Simulated Live Metrics
   const [metrics, setMetrics] = useState({
@@ -54,6 +54,11 @@ export default function TelemetryDashboard() {
           targetGlucose = 82; // low glucose
           targetCortisol = 9.8; // low stress
           targetSpO2 = 99;
+        } else if (simulationMode === 'phone_sensors') {
+          targetHrv = 70; // active recovery
+          targetGlucose = 88; // stable blood sugar from walking
+          targetCortisol = 10.5; // lowered stress from activity
+          targetSpO2 = 99; 
         }
 
         return {
@@ -148,12 +153,17 @@ export default function TelemetryDashboard() {
               <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">
                 {simulationMode === 'spike' ? (
                   <span className="text-red-400 animate-pulse flex items-center gap-2"><Lock size={12}/> METABOLIC SHOCK DETECTED</span>
+                ) : simulationMode === 'phone_sensors' ? (
+                  <span className="text-indigo-400 animate-pulse flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> SYNCING VIA APPLE HEALTH / GOOGLE FIT</span>
                 ) : (
                   "Multi-modal sensory synthesis"
                 )}
               </p>
             </div>
             <div className="flex gap-2">
+               <button onClick={() => setSimulationMode('phone_sensors')} className={`border rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] transition-colors flex items-center gap-1.5 ${simulationMode === 'phone_sensors' ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-400' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'}`}>
+                 <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> Phone Sync
+               </button>
                <button onClick={() => setSimulationMode('fasting')} className={`border rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${simulationMode === 'fasting' ? 'bg-blue-500/20 border-blue-500/50 text-blue-400' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'}`}>Fasting</button>
                <button onClick={() => setSimulationMode('normal')} className={`border rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${simulationMode === 'normal' ? 'bg-teal-500/20 border-teal-500/50 text-teal-400' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'}`}>Normal</button>
                <button onClick={() => setSimulationMode('spike')} className={`border rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${simulationMode === 'spike' ? 'bg-red-500/20 border-red-500/50 text-red-400' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'}`}>Simulate Spike</button>
