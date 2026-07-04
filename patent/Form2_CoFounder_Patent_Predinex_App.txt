@@ -1,0 +1,161 @@
+FORM 2
+THE PATENTS ACT, 1970
+(39 of 1970) &
+THE PATENTS RULES, 2003
+PROVISIONAL SPECIFICATION
+(See section 10 and rule 13)
+________________________________________
+1. TITLE OF THE INVENTION
+A COMPUTER-IMPLEMENTED SYSTEM FOR PREDICTIVE METABOLIC HEALTH MANAGEMENT USING ARTIFICIAL INTELLIGENCE-DRIVEN DIGITAL TWIN MODELING AND MULTI-MODAL SENSOR FUSION
+________________________________________
+2. APPLICANT(S) / JOINT INVENTORS
+
+•	Inventor 1:
+  Name: ROSHAN AHMED A
+  Nationality: Indian
+  Address: 4/88, Samayapuram Nagar, Kozhumanivakkam, PO: Mangadu, Chennai, Tamil Nadu, India
+
+•	Inventor 2:
+  Name: [CO-FOUNDER NAME 1]
+  Nationality: Indian
+  Address: [CO-FOUNDER ADDRESS 1]
+
+•	Inventor 3 (if applicable):
+  Name: [CO-FOUNDER NAME 2]
+  Nationality: Indian
+  Address: [CO-FOUNDER ADDRESS 2]
+
+NOTE: Replace the bracketed placeholders above with the actual legal names and addresses of all co-founders before filing.
+________________________________________
+3. PREAMBLE TO THE DESCRIPTION
+THE FOLLOWING SPECIFICATION PARTICULARLY DESCRIBES THE NATURE OF THE INVENTION:
+________________________________________
+4. DESCRIPTION
+
+I. FIELD OF THE INVENTION
+The present invention pertains to the field of digital health informatics and specifically to a computer-implemented system and method for predictive metabolic health management. The system integrates artificial intelligence (AI), multi-modal physiological sensor fusion from consumer mobile devices and wearable peripherals, and a novel dynamic digital twin modeling technique to enable clinical-grade pre-diabetes risk assessment, real-time metabolic state visualization, and autonomous intervention scheduling — all within a single unified mobile application platform.
+
+II. BACKGROUND OF THE INVENTION
+The global incidence of Type 2 Diabetes Mellitus (T2DM) and its precursor state, pre-diabetes, has reached epidemic proportions. The International Diabetes Federation estimates that approximately 541 million adults worldwide have Impaired Glucose Tolerance (IGT), a form of pre-diabetes. Clinical evidence demonstrates that targeted lifestyle interventions can achieve remission rates exceeding 58% (Diabetes Prevention Program, Lancet, 2002). However, existing digital health tools suffer from critical architectural deficiencies:
+
+(a) Fragmented Data Pipelines: Current applications collect isolated health metrics (e.g., step counts from one app, blood glucose from another, sleep data from a third) without a unified computational model that synthesizes these streams into a coherent metabolic state representation.
+
+(b) Absence of Predictive Intelligence: Existing solutions are retrospective — they display historical data as static charts but fail to project future metabolic trajectories or anticipate glycemic events before they occur.
+
+(c) No Sensor-Agnostic Abstraction Layer: Users are locked into specific hardware ecosystems. There exists no middleware that can simultaneously ingest data from Apple HealthKit, Google Fit, Bluetooth Low Energy (BLE) continuous glucose monitors, and manual user inputs through a single normalized data pipeline.
+
+(d) Clinical Inaccessibility: The vast majority of metabolic health applications present data in raw numerical formats (mg/dL, mmHg) that are incomprehensible to non-clinical users, leading to poor engagement and negligible behavioral change.
+
+Therefore, there exists an urgent and unmet need for an integrated, sensor-agnostic, AI-driven metabolic health platform that (i) fuses multi-modal sensor data in real-time, (ii) generates a predictive digital twin of the user's metabolism, (iii) autonomously schedules behavioral interventions, and (iv) presents all information through an intuitive, three-dimensional visual interface accessible to users of all literacy levels.
+
+III. SUMMARY OF THE INVENTION
+The present invention, embodied in the mobile application platform "Predinex," provides the following novel technical contributions:
+
+1. MULTI-MODAL SENSOR FUSION MIDDLEWARE
+A sensor-agnostic data ingestion layer capable of simultaneously receiving, normalizing, and time-aligning physiological data streams from:
+  (a) Native mobile device sensors (accelerometer for step counting, gyroscope for activity classification);
+  (b) Apple HealthKit API (heart rate variability, resting heart rate, sleep stage architecture, VO2 max estimates);
+  (c) Google Fit Health Connect API (step counts, active calories, distance, heart rate);
+  (d) Bluetooth Low Energy (BLE) continuous glucose monitors (CGMs) and blood pressure cuffs;
+  (e) Manual user inputs via text, voice (multilingual speech-to-text), or structured forms.
+
+The middleware applies a temporal alignment algorithm that normalizes data arriving at heterogeneous frequencies (e.g., CGM readings every 5 minutes vs. daily fasting glucose entries) into a unified metabolic state vector updated at configurable intervals.
+
+2. AI-DRIVEN METABOLIC DIGITAL TWIN ENGINE ("BioTwin")
+A computational engine that consumes the normalized metabolic state vector and generates a dynamic digital twin — a real-time computational replica of the user's metabolic system. The BioTwin calculates the following derived clinical indices:
+
+  (a) Insulin Sensitivity Index (ISI):
+      ISI = max(10, 100 - (G_fasting - 90) × 0.7)
+      Where G_fasting is the most recent fasting blood glucose reading in mg/dL.
+
+  (b) Glucose Stability Score (GSS):
+      GSS = max(10, 100 - (G_fasting - 85) × 0.8)
+
+  (c) Lifestyle Integration Score (LIS):
+      LIS = (H_sleep / 8) × 30 + (W_water / 3000) × 25 + (M_sun / 30) × 20 + 25
+      Where H_sleep = hours of sleep, W_water = water intake in mL, M_sun = minutes of sunlight exposure.
+
+  (d) Composite Metabolic Health Score (MHS):
+      MHS = (ISI × 0.35) + (GSS × 0.35) + (LIS × 0.30)
+
+The BioTwin engine projects a 7-day, 30-day, and 90-day metabolic trajectory using a weighted moving average of historical MHS values, combined with trend analysis of individual component scores. This projection is rendered as a three-dimensional helical visualization that dynamically changes color (along an HSL gradient from green [stable] through amber [caution] to red [critical]), rotation speed, and geometric complexity in direct proportion to the computed metabolic risk level.
+
+3. AUTONOMOUS INTERVENTION SCHEDULING SYSTEM
+A closed-loop behavioral intervention engine that:
+  (a) Monitors the BioTwin's predicted postprandial glucose trajectory following user-reported meal consumption;
+  (b) Parses meal descriptions (via NLP text analysis or voice input) against a proprietary glycemic index database spanning 500+ food items including regional South Asian cuisines;
+  (c) Calculates the predicted glucose spike magnitude and time-to-peak;
+  (d) Automatically schedules a timed physical activity intervention (walking timer) calibrated to the predicted spike, leveraging the physiological GLUT4 transporter glucose uptake mechanism that operates independently of insulin during skeletal muscle contraction;
+  (e) Delivers the intervention notification via push notification, in-app modal, SMS, email, or WhatsApp message, based on user preference and accessibility requirements.
+
+4. MULTI-LINGUAL VOICE-FIRST ACCESSIBILITY LAYER
+A speech processing pipeline supporting real-time bidirectional voice interaction in multiple languages (English, Hindi, Tamil, and extensible to additional languages). This layer enables:
+  (a) Voice-driven meal logging ("I had two rotis with dal for lunch");
+  (b) Spoken health metric announcements for visually impaired users;
+  (c) Conversational AI health coaching through a natural language interface.
+
+5. CLINICAL TELEMETRY DASHBOARD WITH REAL-TIME SYNCHRONIZATION
+A zero-latency telemetry visualization system that:
+  (a) Displays live-streaming biometric data (heart rate variability, glucose, cortisol proxy, SpO2, body temperature) with sub-second update intervals;
+  (b) Implements a cryptographic data integrity protocol ensuring end-to-end encryption of all health data;
+  (c) Provides simulation modes (Normal, Fasting, Spike, Phone Sensor Sync) enabling users and clinicians to model hypothetical metabolic scenarios;
+  (d) Renders a holographic-style 3D visualization with orbiting data nodes representing individual biometric streams.
+
+6. CROSS-PLATFORM NATIVE MOBILE DEPLOYMENT
+A hybrid deployment architecture using a web-to-native bridge (Capacitor framework) that:
+  (a) Wraps the progressive web application into native iOS and Android binaries;
+  (b) Enables direct access to native device APIs (HealthKit, Google Fit, Bluetooth, push notifications) that are inaccessible to pure web applications;
+  (c) Maintains a single codebase while delivering platform-native performance and app store distribution capability.
+
+IV. DISTINCTION FROM PRIOR ART
+This invention is distinguished from existing solutions in the following material respects:
+
+(a) Unlike MyFitnessPal, Apple Health, or Google Fit — which function as passive data aggregators — the present invention actively synthesizes multi-source data into a predictive computational model (the BioTwin) and autonomously triggers behavioral interventions.
+
+(b) Unlike Livongo or Glooko — which are retrospective CGM data viewers — the present invention generates real-time 3D visual representations of metabolic state and projects future glycemic trajectories.
+
+(c) Unlike any known prior art, the present invention combines: (i) multi-modal sensor fusion, (ii) AI-driven digital twin modeling, (iii) autonomous intervention scheduling, (iv) 3D holographic visualization, and (v) multilingual voice accessibility — all within a single integrated platform deployable as both a web application and native mobile application.
+
+V. CLAIMS (PROVISIONAL)
+The inventors claim:
+
+1. A computer-implemented system for predictive metabolic health management comprising:
+   (a) A sensor-agnostic data ingestion middleware that normalizes physiological data from heterogeneous sources including mobile device sensors, Apple HealthKit, Google Fit, BLE medical devices, and manual user inputs;
+   (b) An AI-driven metabolic digital twin engine that computes derived clinical indices and generates predictive metabolic trajectory projections;
+   (c) An autonomous intervention scheduling module that analyzes predicted glycemic events and triggers timed behavioral interventions;
+   (d) A three-dimensional dynamic visualization interface that renders the digital twin as an interactive holographic model; and
+   (e) A multilingual voice-first accessibility layer enabling speech-driven health data logging and conversational AI coaching.
+
+2. The system of claim 1, wherein the metabolic digital twin engine computes a Composite Metabolic Health Score (MHS) by weighted aggregation of an Insulin Sensitivity Index, a Glucose Stability Score, and a Lifestyle Integration Score.
+
+3. The system of claim 1, wherein the autonomous intervention scheduling module parses natural language meal descriptions against a glycemic index database and calculates predicted postprandial glucose spike magnitude and time-to-peak.
+
+4. The system of claim 1, wherein the three-dimensional visualization dynamically modifies its color spectrum, rotation velocity, and geometric complexity in direct proportion to the computed metabolic risk level.
+
+5. The system of claim 1, further comprising a cross-platform deployment architecture that wraps the web application into native iOS and Android binaries while maintaining access to platform-specific health data APIs.
+
+6. A computer-implemented method for predicting and preventing glycemic events, comprising the steps of:
+   (a) Receiving multi-modal physiological data from at least two heterogeneous sensor sources;
+   (b) Normalizing and time-aligning said data into a unified metabolic state vector;
+   (c) Computing derived clinical indices including Insulin Sensitivity, Glucose Stability, and Lifestyle Integration scores;
+   (d) Generating a predictive metabolic trajectory projection;
+   (e) Detecting a predicted glycemic event exceeding a configurable threshold;
+   (f) Autonomously scheduling a timed physical activity intervention calibrated to the predicted event; and
+   (g) Delivering said intervention via at least one of: push notification, SMS, email, WhatsApp, or voice announcement.
+
+7. A non-transitory computer-readable medium storing instructions that, when executed by a processor, cause the processor to perform the method of claim 6.
+
+________________________________________
+5. DATE AND SIGNATURE
+
+Dated this _____ Day of __________, 2026
+
+Signature of Inventor 1: _____________________
+Name: ROSHAN AHMED A
+
+Signature of Inventor 2: _____________________
+Name: [CO-FOUNDER NAME 1]
+
+Signature of Inventor 3: _____________________
+Name: [CO-FOUNDER NAME 2]
+________________________________________
