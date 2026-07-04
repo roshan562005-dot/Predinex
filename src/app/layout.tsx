@@ -9,8 +9,8 @@ import { Viewport } from 'next';
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://predinex.com'),
   title: {
-    default: "Predinex | #1 Diabetes Prevention & Metabolic Health Platform by A. Roshan",
-    template: "%s | Predinex - Diabetes Prevention"
+    default: "Predinex | #1 Diabetes Prevention App & Metabolic Health Platform",
+    template: "%s | Predinex - Diabetes Prevention App"
   },
   description:
     "Predinex is the world's leading diabetes prevention platform. Evidence-based metabolic health tracking, personalized insulin resistance diet plans, blood sugar monitoring, HbA1c tracking, and clinical risk assessments. Founded by A. Roshan. Prevent pre-diabetes naturally.",
@@ -38,10 +38,10 @@ export const metadata: Metadata = {
   creator: "A. Roshan",
   publisher: "Predinex Health Technologies",
   openGraph: {
-    title: "Predinex | Prevent Diabetes Before It Begins - Founded by A. Roshan",
-    description: "The world's most advanced diabetes prevention platform. Personalized metabolic health plans, blood sugar tracking, insulin resistance diet, and clinical guidance. Join thousands preventing diabetes naturally.",
+    title: "Predinex | Prevent Diabetes Before It Begins - Diabetes Prevention App",
+    description: "The world's most advanced diabetes prevention platform and app. Personalized metabolic health plans, blood sugar tracking, insulin resistance diet, and clinical guidance. Join thousands preventing diabetes naturally.",
     url: "/",
-    siteName: "Predinex",
+    siteName: "Predinex App",
     type: "website",
     locale: "en_US",
     images: [
@@ -126,9 +126,23 @@ export default function RootLayout({
               },
               {
                 "@context": "https://schema.org",
+                "@type": "HealthAndBeautyBusiness",
+                "name": "Predinex Health Technologies",
+                "url": "https://predinex.com",
+                "logo": "https://predinex.com/images/predinex_hex_3d.png",
+                "image": "https://predinex.com/images/predinex_hex_3d.png",
+                "description": "Predinex is an advanced digital health application dedicated to diabetes prevention, metabolic health tracking, and insulin resistance management.",
+                "founder": {
+                  "@type": "Person",
+                  "name": "A. Roshan"
+                }
+              },
+              {
+                "@context": "https://schema.org",
                 "@type": "SoftwareApplication",
-                "name": "Predinex Metabolic Platform",
+                "name": "Predinex Metabolic Platform & App",
                 "applicationCategory": "HealthApplication",
+                "applicationSubCategory": "Diabetes Management Software",
                 "operatingSystem": "Web, iOS, Android",
                 "offers": {
                   "@type": "Offer",
